@@ -80,4 +80,14 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.hilt.ext.work)
     implementation(libs.androidx.hilt.navigation.compose)
+
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.converter.moshi)
+
+    kapt(libs.moshi.kotlin.codegen)
+    implementation(libs.moshi)
+    implementation(libs.moshi.kotlin)
+
+//    implementation(libs.okhttp.okhttp3)
+    implementation(libs.okhttp.logging)
 }
