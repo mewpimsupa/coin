@@ -1,5 +1,5 @@
 package com.pimsupa.coin.ui.coinlist
 
-sealed class CoinListEvent
-{
+sealed class CoinListEvent {
+    data object LoadCoins : CoinListEvent()
 }

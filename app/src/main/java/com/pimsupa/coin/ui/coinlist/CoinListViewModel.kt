@@ -12,29 +12,57 @@ import javax.inject.Inject
 class CoinListViewModel @Inject constructor(private val getCoins: GetCoins) :
     BaseViewModel<CoinListState>(CoinListState()) {
 
-    fun onEvent(event: CoinListEvent) {
+    private var currentPage = 0
 
+    fun onEvent(event: CoinListEvent) {
+        when (event) {
+            is CoinListEvent.LoadCoins -> {
+                loadCoins()
+            }
+        }
     }
 
     init {
-        viewModelScope.launch {
-            setState {
-                copy(isLoading = true)
-            }
+        setState {
+            copy(isLoading = true)
+        }
+        getCoins()
+    }
 
-            getCoins.invoke()
+    private fun getCoins() {
+        viewModelScope.launch {
+            getCoins.invoke(currentPage)
                 .onSuccess {
                     setState {
-                        copy(coins = it, isLoading = false)
+                        copy(
+                            coins = it,
+                            isLoading = false,
+                            isPagination = false
+                        )
                     }
                 }
                 .onFailure {
                     when (it) {
                         is CoinException.CoinIsNullException, is CoinException.GetCoinsErrorException -> {
-                            setState { copy(isError = true, isLoading = false) }
+                            setState {
+                                copy(
+                                    isError = true,
+                                    isLoading = false,
+                                    isPagination = false
+                                )
+                            }
                         }
                     }
                 }
         }
+
+    }
+
+    private fun loadCoins() {
+        setState {
+            copy(isPagination = true)
+        }
+        currentPage++
+        getCoins()
     }
 }

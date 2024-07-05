@@ -1,15 +1,20 @@
 package com.pimsupa.coin.ui.coinlist
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -21,6 +26,8 @@ import com.pimsupa.coin.domain.model.Coin
 import com.pimsupa.coin.ui.coinlist.component.CoinItem
 import com.pimsupa.coin.util.LocalCoinColor
 import com.pimsupa.coin.util.LocalCoinTextStyle
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 @Composable
 fun CoinListScreen(
@@ -29,7 +36,10 @@ fun CoinListScreen(
 
     val uiState = viewModel.uiState.collectAsState().value
     val onEvent = viewModel::onEvent
+
+
     CoinListScreenContent(uiState, onEvent)
+
 }
 
 
@@ -40,7 +50,21 @@ fun CoinListScreenContent(
 ) {
     val textStyle = LocalCoinTextStyle.current
     val color = LocalCoinColor.current
-    LazyColumn {
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(listState) {
+        snapshotFlow { listState.layoutInfo.visibleItemsInfo }
+            .collectLatest { visibleItems ->
+                if (visibleItems.isNotEmpty() && visibleItems.last().index == state.coins.size - 1 && !state.isPagination) {
+                    event.invoke(CoinListEvent.LoadCoins)
+                }
+            }
+    }
+
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        state = listState,
+    ) {
         item {
             Text(
                 modifier = Modifier.padding(vertical = 20.dp, horizontal = 16.dp),
@@ -67,6 +91,14 @@ fun CoinListScreenContent(
         items(state.coins) { coin ->
             // compose
             CoinItem(coin)
+        }
+        item {
+            if (state.isPagination) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(40.dp),
+                    color = color.blue
+                )
+            }
         }
 
     }

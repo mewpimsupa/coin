@@ -10,6 +10,9 @@ import retrofit2.http.Query
 interface CoinApi {
 
     @GET("coins")
-    suspend fun getCoins(@Query("scopeLimit") scopeLimit: Int): Response<BaseResponse<CoinsResponse>>
+    suspend fun getCoins(
+        @Query("limit") limit: Int,
+        @Query("offset") offset: Int
+    ): Response<BaseResponse<CoinsResponse>>
 
 }
