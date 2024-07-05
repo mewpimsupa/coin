@@ -2,6 +2,7 @@ package com.pimsupa.coin.ui.coinlist
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
@@ -22,7 +23,7 @@ fun CoinListScreen(
 @Composable
 fun CoinListScreenContent() {
     Column(modifier = Modifier.fillMaxSize()) {
-
+            Text(text = "test ka")
     }
 }
 

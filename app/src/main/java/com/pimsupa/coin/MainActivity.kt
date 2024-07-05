@@ -13,23 +13,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
+import androidx.navigation.compose.rememberNavController
+import com.pimsupa.coin.navigation.CoinNavigation
 import com.pimsupa.coin.ui.coinlist.CoinListViewModel
 import com.pimsupa.coin.ui.theme.CoinTheme
+import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             CoinTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    val a = hiltViewModel<CoinListViewModel>()
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                CoinNavigation(
+                    navController = rememberNavController()
+                )
             }
         }
     }
