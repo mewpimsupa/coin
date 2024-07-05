@@ -13,10 +13,9 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-//        classpath(libs.android.gradlePlugin)
-//        classpath(libs.android.hilt.android.gradle.plugin)
-//        classpath(libs.kotlin.gradlePlugin)
-
+        classpath(libs.android.gradlePlugin)
+        classpath(libs.android.hilt.android.gradle.plugin)
+        classpath(libs.kotlin.gradlePlugin)
     }
 }
 

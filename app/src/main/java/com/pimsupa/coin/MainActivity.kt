@@ -11,7 +11,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
+import com.pimsupa.coin.ui.coinlist.CoinListViewModel
 import com.pimsupa.coin.ui.theme.CoinTheme
+import dagger.hilt.android.lifecycle.HiltViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,6 +24,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             CoinTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    val a = hiltViewModel<CoinListViewModel>()
                     Greeting(
                         name = "Android",
                         modifier = Modifier.padding(innerPadding)
