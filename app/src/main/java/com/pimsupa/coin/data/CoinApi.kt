@@ -4,10 +4,12 @@ import com.pimsupa.coin.data.getcoins.CoinsResponse
 import com.pimsupa.coin.util.BaseResponse
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface CoinApi {
 
-    @GET("/coins")
-    suspend fun getCoins(): Response<BaseResponse<CoinsResponse>>
+    @GET("coins")
+    suspend fun getCoins(@Query("scopeLimit") scopeLimit: Int): Response<BaseResponse<CoinsResponse>>
 
 }

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">coin</string>
+    <string name="title_buy_sell_hold_crypto">Buy, sell and hold crypto</string>
 </resources>

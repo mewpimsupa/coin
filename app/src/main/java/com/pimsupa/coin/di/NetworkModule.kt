@@ -1,5 +1,7 @@
 package com.pimsupa.coin.di
 
+import com.pimsupa.coin.data.AuthAuthenticator
+import com.pimsupa.coin.data.CoinApi
 import com.pimsupa.coin.util.Configs
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -26,9 +28,11 @@ object NetworkModule {
     @Singleton
     fun provideOkHttpClientBuilder(
         httpLoggingInterceptor: HttpLoggingInterceptor,
+        authAuthenticator: AuthAuthenticator
     ): OkHttpClient.Builder =
         OkHttpClient.Builder()
             .addInterceptor(httpLoggingInterceptor)
+            .authenticator(authAuthenticator)
 
 
     @Provides
@@ -58,5 +62,12 @@ object NetworkModule {
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(client)
             .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideCoinApi(retrofit: Retrofit): CoinApi {
+        return retrofit
+            .create(CoinApi::class.java)
     }
 }
