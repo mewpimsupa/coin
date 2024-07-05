@@ -11,7 +11,7 @@ data class Coin(
     @Json(name = "change")
     val change: String,
     @Json(name = "coinrankingUrl")
-    val coinrankingUrl: String,
+    val coinRankingUrl: String,
     @Json(name = "color")
     val color: String,
     @Json(name = "contractAddresses")
