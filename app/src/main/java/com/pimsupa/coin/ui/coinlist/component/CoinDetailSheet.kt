@@ -56,8 +56,8 @@ fun CoinContent(coinDetail: CoinDetail) {
     Column(
         Modifier
             .fillMaxWidth()
-            .heightIn(max = 565.dp)
-
+            .heightIn(max = 565.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Column(
             modifier = Modifier.padding(
@@ -84,14 +84,13 @@ fun CoinContent(coinDetail: CoinDetail) {
             context.startActivity(intent)
         }) {
             Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterVertically),
                 text = stringResource(id = R.string.button_go_to_website),
                 textAlign = TextAlign.Center,
+                style = textStyle.detailBold2,
                 color = color.blue
             )
         }
+
 
     }
 }

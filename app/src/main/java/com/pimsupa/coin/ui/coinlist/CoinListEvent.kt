@@ -6,4 +6,5 @@ sealed class CoinListEvent {
     data object LoadCoins : CoinListEvent()
     data class OnClickCoin(val coin: Coin) : CoinListEvent()
     object OnDismissCoinDetail : CoinListEvent()
+    data object OnClickLoadCoinsAgain : CoinListEvent()
 }

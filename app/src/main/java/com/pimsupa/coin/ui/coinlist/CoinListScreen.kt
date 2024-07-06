@@ -35,6 +35,7 @@ import com.pimsupa.coin.R
 import com.pimsupa.coin.domain.model.Coin
 import com.pimsupa.coin.ui.coinlist.component.CoinDetail
 import com.pimsupa.coin.ui.coinlist.component.CoinItem
+import com.pimsupa.coin.ui.coinlist.component.CoinListError
 import com.pimsupa.coin.util.LaunchedEventEffect
 import com.pimsupa.coin.util.LocalCoinColor
 import com.pimsupa.coin.util.LocalCoinTextStyle
@@ -134,18 +135,27 @@ fun CoinListScreenContent(
                 color = color.allBlack
             )
         }
-        items(coins) { coin ->
-            CoinItem(coin) {
-                event.invoke(CoinListEvent.OnClickCoin(coin))
+        if (state.isError) {
+            item {
+                CoinListError {
+                    event.invoke(CoinListEvent.OnClickLoadCoinsAgain)
+                }
+            }
+        } else {
+            items(coins) { coin ->
+                CoinItem(coin) {
+                    event.invoke(CoinListEvent.OnClickCoin(coin))
+                }
+            }
+            item {
+                if (state.isLoading) {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Loading()
+                }
+                Spacer(modifier = Modifier.height(100.dp))
             }
         }
-        item {
-            if (state.isLoading) {
-                Spacer(modifier = Modifier.height(12.dp))
-                Loading()
-            }
-            Spacer(modifier = Modifier.height(100.dp))
-        }
+
     }
 }
 
@@ -172,10 +182,26 @@ fun CoinListScreenPreview() {
     CoinListScreenContent(
         state = CoinListState(
             coins = listOf(
-                Coin(name = "test coin1"),
-                Coin(name = "test coin2")
+                Coin(name = "test coin1", change = "-3.22"),
+                Coin(name = "test coin2", change = "3.22")
             )
         ), event = {}
     )
 }
+
+
+@Composable
+@Preview(backgroundColor = 0xFFFFFF, showBackground = true)
+fun CoinListScreenErrorPreview() {
+    CoinListScreenContent(
+        state = CoinListState(
+            isError = true,
+            coins = listOf(
+                Coin(name = "test coin1", change = "-3.22"),
+                Coin(name = "test coin2", change = "3.22")
+            )
+        ), event = {}
+    )
+}
+
 

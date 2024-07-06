@@ -13,6 +13,7 @@ import com.pimsupa.coin.util.consumed
 import com.pimsupa.coin.util.triggered
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onCompletion
@@ -39,6 +40,8 @@ class CoinListViewModel @Inject constructor(
             is CoinListEvent.OnClickCoin -> onClickCoin(event.coin)
 
             is CoinListEvent.OnDismissCoinDetail -> onDismissCoinDetail()
+
+            is CoinListEvent.OnClickLoadCoinsAgain ->onClickLoadCoinsAgain()
         }
     }
 
@@ -51,7 +54,7 @@ class CoinListViewModel @Inject constructor(
     private suspend fun getCoins() {
         getCoins.invoke(currentPage)
             .onStart {
-                setState { copy(isLoading = true) }
+                setState { copy(isLoading = true, isError = false) }
             }
             .onEach { data ->
                 val updatedCoins = withContext(defaultDispatcher) {
@@ -64,6 +67,7 @@ class CoinListViewModel @Inject constructor(
                         coins = updatedCoins
                     )
                 }
+                currentPage++
             }
             .catch { _ ->
                 setState {
@@ -74,7 +78,6 @@ class CoinListViewModel @Inject constructor(
                 }
             }
             .onCompletion {
-                currentPage++
                 setState { copy(isLoading = false) }
             }
             .collect()
@@ -84,11 +87,9 @@ class CoinListViewModel @Inject constructor(
         getCoinDetail.invoke(coin.uuid)
             .onStart {
                 //add fullscreen loading for better experience
-                Log.d("test", "1")
                 setState { copy(isFullScreenLoading = true) }
             }
             .onEach { data ->
-                Log.d("test", "2 $data")
                 setState {
                     copy(
                         showCoinDetail = data,
@@ -97,7 +98,6 @@ class CoinListViewModel @Inject constructor(
                 }
             }
             .catch { e ->
-                Log.d("test", "3 $e")
                 //no requirement
             }
             .onCompletion {
@@ -115,6 +115,7 @@ class CoinListViewModel @Inject constructor(
     }
 
     private fun onClickCoin(coin: Coin) {
+        if(uiState.value.isFullScreenLoading) return
         viewModelScope.launch {
             getCoinDetail(coin)
         }
@@ -126,6 +127,13 @@ class CoinListViewModel @Inject constructor(
                 showCoinDetail = null,
                 uiEvent = triggered(CoinListUiEvent.CloseCoinDetail)
             )
+        }
+    }
+
+    private fun onClickLoadCoinsAgain() {
+        if(uiState.value.isLoading) return
+        viewModelScope.launch {
+            getCoins()
         }
     }
 
