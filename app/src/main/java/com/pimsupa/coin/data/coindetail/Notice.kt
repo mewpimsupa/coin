@@ -7,7 +7,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class Notice(
     @Json(name = "type")
-    val type: String,
+    val type: String?,
     @Json(name = "value")
-    val value: String
+    val value: String?
 )

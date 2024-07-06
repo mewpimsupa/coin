@@ -7,13 +7,13 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class Supply(
     @Json(name = "circulating")
-    val circulating: String,
+    val circulating: String?,
     @Json(name = "confirmed")
-    val confirmed: Boolean,
+    val confirmed: Boolean?,
     @Json(name = "max")
-    val max: String,
+    val max: String?,
     @Json(name = "supplyAt")
-    val supplyAt: Int,
+    val supplyAt: Int?,
     @Json(name = "total")
-    val total: String
+    val total: String?
 )

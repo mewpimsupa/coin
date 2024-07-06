@@ -7,7 +7,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class AllTimeHigh(
     @Json(name = "price")
-    val price: String,
+    val price: String?,
     @Json(name = "timestamp")
-    val timestamp: Int
+    val timestamp: Int?
 )

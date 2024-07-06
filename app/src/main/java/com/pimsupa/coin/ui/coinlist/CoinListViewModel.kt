@@ -3,6 +3,7 @@ package com.pimsupa.coin.ui.coinlist
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.pimsupa.coin.domain.model.Coin
+import com.pimsupa.coin.domain.usecase.GetCoinDetail
 import com.pimsupa.coin.domain.usecase.GetCoins
 import com.pimsupa.coin.util.BaseViewModel
 import com.pimsupa.coin.util.CoinDispatchers
@@ -24,6 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CoinListViewModel @Inject constructor(
     private val getCoins: GetCoins,
+    private val getCoinDetail: GetCoinDetail,
     @Dispatcher(CoinDispatchers.Default) private val defaultDispatcher: CoroutineDispatcher
 ) :
     BaseViewModel<CoinListState>(CoinListState()) {
@@ -78,6 +80,32 @@ class CoinListViewModel @Inject constructor(
             .collect()
     }
 
+    private suspend fun getCoinDetail(coin: Coin) {
+        getCoinDetail.invoke(coin.uuid)
+            .onStart {
+                //add fullscreen loading for better experience
+                Log.d("test", "1")
+                setState { copy(isFullScreenLoading = true) }
+            }
+            .onEach { data ->
+                Log.d("test", "2 $data")
+                setState {
+                    copy(
+                        showCoinDetail = data,
+                        uiEvent = triggered(CoinListUiEvent.OpenCoinDetail)
+                    )
+                }
+            }
+            .catch { e ->
+                Log.d("test", "3 $e")
+                //no requirement
+            }
+            .onCompletion {
+                setState { copy(isFullScreenLoading = false) }
+            }
+            .collect()
+    }
+
 
     private fun loadCoins() {
         viewModelScope.launch {
@@ -87,11 +115,8 @@ class CoinListViewModel @Inject constructor(
     }
 
     private fun onClickCoin(coin: Coin) {
-        setState {
-            copy(
-                showCoinDetail = coin,
-                uiEvent = triggered(CoinListUiEvent.OpenCoinDetail(coin))
-            )
+        viewModelScope.launch {
+            getCoinDetail(coin)
         }
     }
 

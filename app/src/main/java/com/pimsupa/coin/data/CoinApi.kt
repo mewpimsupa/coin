@@ -16,7 +16,7 @@ interface CoinApi {
         @Query("offset") offset: Int
     ): Response<BaseResponse<CoinsResponse>>
 
-    @GET("/coin/{uuid}")
+    @GET("coin/{uuid}")
     suspend fun getCoinDetail(
         @Path("uuid") uuid: String,
     ): Response<BaseResponse<CoinDetailResponse>>

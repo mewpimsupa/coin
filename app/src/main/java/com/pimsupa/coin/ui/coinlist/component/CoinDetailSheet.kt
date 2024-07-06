@@ -1,93 +1,128 @@
 package com.pimsupa.coin.ui.coinlist.component
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import com.pimsupa.coin.R
 import com.pimsupa.coin.domain.model.Coin
+import com.pimsupa.coin.domain.model.CoinDetail
+import com.pimsupa.coin.util.CoinColor
 import com.pimsupa.coin.util.CoinImage
 import com.pimsupa.coin.util.LocalCoinColor
 import com.pimsupa.coin.util.LocalCoinTextStyle
 import com.pimsupa.coin.util.parseColor
-import kotlinx.coroutines.launch
-import org.jetbrains.annotations.Async
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CoinDetail(coin: Coin, onDismiss: () -> Unit, bottomSheetState: SheetState) {
-    val textStyle = LocalCoinTextStyle.current
-    val color = LocalCoinColor.current
+fun CoinDetail(coinDetail: CoinDetail, onDismiss: () -> Unit, bottomSheetState: SheetState) {
+
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = bottomSheetState
     ) {
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .height(200.dp)
-                .padding(top = 32.dp, start = 24.dp, end = 24.dp)
-        ) {
-            CoinHeader(coin)
-
-
-        }
+        CoinContent(coinDetail)
     }
 }
 
+@Composable
+fun CoinContent(coinDetail: CoinDetail) {
+    val textStyle = LocalCoinTextStyle.current
+    val color = LocalCoinColor.current
+    val context = LocalContext.current
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .heightIn(max = 565.dp)
+
+    ) {
+        Column(
+            modifier = Modifier.padding(
+                top = 32.dp,
+                start = 24.dp,
+                end = 24.dp
+            )
+        ) {
+            CoinHeader(coinDetail)
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = coinDetail.description,
+                style = textStyle.detail2,
+                color = color.grey
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+
+        }
+        Spacer(modifier = Modifier.weight(1f))
+
+        HorizontalDivider()
+        TextButton(onClick = {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(coinDetail.websiteUrl))
+            context.startActivity(intent)
+        }) {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterVertically),
+                text = stringResource(id = R.string.button_go_to_website),
+                textAlign = TextAlign.Center,
+                color = color.blue
+            )
+        }
+
+    }
+}
 
 @Composable
-fun CoinHeader(coin: Coin) {
+fun CoinHeader(coinDetail: CoinDetail) {
     val textStyle = LocalCoinTextStyle.current
     val color = LocalCoinColor.current
     Row {
         CoinImage(
-            imageUrl = coin.iconUrl,
+            imageUrl = coinDetail.iconUrl,
             desc = "coin icon",
             modifier = Modifier.size(50.dp)
         )
         Spacer(modifier = Modifier.width(16.dp))
         Column {
-            Row {
+            Row(verticalAlignment = Alignment.Top) {
                 Text(
-                    text = coin.name,
+                    text = coinDetail.name,
                     style = textStyle.header2,
-                    color = coin.color.parseColor()
+                    color = coinDetail.color.parseColor() ?: color.black
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = coin.symbolDetail(),
+                    text = coinDetail.symbolDetail(),
                     style = textStyle.title,
                     color = color.allBlack
                 )
             }
-            Row {
+            Spacer(modifier = Modifier.height(6.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = stringResource(id = R.string.title_price),
                     style = textStyle.detailBold1,
@@ -95,12 +130,13 @@ fun CoinHeader(coin: Coin) {
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = coin.getCoinDetailPrice(),
+                    text = coinDetail.getCoinDetailPrice(),
                     style = textStyle.detail1,
                     color = color.black
                 )
             }
-            Row {
+            Spacer(modifier = Modifier.height(6.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = stringResource(id = R.string.title_market_cap),
                     style = textStyle.detailBold1,
@@ -108,7 +144,7 @@ fun CoinHeader(coin: Coin) {
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = coin.getCoinMarketCap(),
+                    text = coinDetail.getCoinMarketCap(),
                     style = textStyle.detail1,
                     color = color.black
                 )
@@ -122,13 +158,14 @@ fun CoinHeader(coin: Coin) {
 @Composable
 @Preview(backgroundColor = 0xFFFFFF, showBackground = true)
 fun CoinDetailPreview() {
-    CoinDetail(
-        coin = Coin(
+    CoinContent(
+        coinDetail = CoinDetail(
             name = "test",
             price = "1239204.320323",
             marketCap = "2320323",
-            color = "#f7931A"
-        ), onDismiss = { }, bottomSheetState = rememberModalBottomSheetState()
+            color = "#f7931A",
+            description = "12348290ewjkad;sadwndmsdksjdgshjadguwiasjdhwuakshdxjzchjzkhduwakhjsdkhuawkjshduwkajshduwkajsdhsadw"
+        )
     )
 }
 
@@ -136,11 +173,27 @@ fun CoinDetailPreview() {
 @Preview(backgroundColor = 0xFFFFFF, showBackground = true)
 fun CoinHeaderPreview() {
     CoinHeader(
-        coin = Coin(
+        coinDetail = CoinDetail(
             name = "test",
+            symbol = "TTC",
             price = "1239204.320323",
             marketCap = "2320323",
             color = "#f7931A"
         )
     )
 }
+
+@Composable
+@Preview(backgroundColor = 0xFFFFFF, showBackground = true)
+fun CoinHeaderLongPreview() {
+    CoinHeader(
+        coinDetail = CoinDetail(
+            name = "reserfdfkdlsfkld;soekfld;soes;dlfkls;khjsdhf",
+            symbol = "DDDDD",
+            price = "1239204.320323",
+            marketCap = "2320323",
+            color = "#f7931A"
+        )
+    )
+}
+

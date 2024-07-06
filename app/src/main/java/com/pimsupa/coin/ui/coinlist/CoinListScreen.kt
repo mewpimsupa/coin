@@ -84,10 +84,14 @@ fun CoinListScreen(
 
     if (uiState.showCoinDetail != null)
         CoinDetail(
-            coin = uiState.showCoinDetail,
+            coinDetail = uiState.showCoinDetail,
             onDismiss = { onEvent.invoke(CoinListEvent.OnDismissCoinDetail) },
             bottomSheetState = bottomSheetState
         )
+
+    if (uiState.isFullScreenLoading) {
+        Loading(modifier = Modifier.fillMaxSize())
+    }
 }
 
 
@@ -146,10 +150,10 @@ fun CoinListScreenContent(
 }
 
 @Composable
-fun Loading() {
+fun Loading(modifier: Modifier = Modifier) {
     val color = LocalCoinColor.current
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally

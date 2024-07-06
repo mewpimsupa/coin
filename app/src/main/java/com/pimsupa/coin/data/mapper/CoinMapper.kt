@@ -27,14 +27,14 @@ fun Coin.toCoin(): com.pimsupa.coin.domain.model.Coin {
 
 fun com.pimsupa.coin.data.coindetail.Coin.toCoinDetail(): CoinDetail {
     return CoinDetail(
-        color = this.color,
-        description = this.description,
-        iconUrl = this.iconUrl,
-        marketCap = this.marketCap,
-        name = this.name,
-        price = this.price,
-        symbol = this.symbol,
-        uuid = this.uuid,
-        websiteUrl = this.websiteUrl
+        color = this.color ?: "",
+        description = this.description ?: "",
+        iconUrl = this.iconUrl ?: "",
+        marketCap = this.marketCap ?: "",
+        name = this.name ?: "",
+        price = this.price ?: "",
+        symbol = this.symbol ?: "",
+        uuid = this.uuid ?: "",
+        websiteUrl = this.websiteUrl ?: ""
     )
 }
