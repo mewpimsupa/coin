@@ -41,7 +41,8 @@ class CoinListViewModel @Inject constructor(
 
             is CoinListEvent.OnDismissCoinDetail -> onDismissCoinDetail()
 
-            is CoinListEvent.OnClickLoadCoinsAgain ->onClickLoadCoinsAgain()
+            is CoinListEvent.OnClickLoadCoinsAgain -> onClickLoadCoinsAgain()
+            is CoinListEvent.RefreshCoins -> refreshCoin()
         }
     }
 
@@ -73,12 +74,18 @@ class CoinListViewModel @Inject constructor(
                 setState {
                     copy(
                         isError = true,
-                        isLoading = false
+                        isLoading = false,
+                        isRefresh = false
                     )
                 }
             }
             .onCompletion {
-                setState { copy(isLoading = false) }
+                setState {
+                    copy(
+                        isLoading = false,
+                        isRefresh = false
+                    )
+                }
             }
             .collect()
     }
@@ -110,12 +117,21 @@ class CoinListViewModel @Inject constructor(
     private fun loadCoins() {
         viewModelScope.launch {
             if (uiState.value.coins.isEmpty()) return@launch
+            setState { copy(coins = listOf()) }
+            currentPage = 0
             getCoins()
         }
     }
 
+    private fun refreshCoin() {
+        //TODO bug on refresh coin second time on error screen
+        setState { copy(isRefresh = true) }
+        loadCoins()
+    }
+
+
     private fun onClickCoin(coin: Coin) {
-        if(uiState.value.isFullScreenLoading) return
+        if (uiState.value.isFullScreenLoading) return
         viewModelScope.launch {
             getCoinDetail(coin)
         }
@@ -131,7 +147,7 @@ class CoinListViewModel @Inject constructor(
     }
 
     private fun onClickLoadCoinsAgain() {
-        if(uiState.value.isLoading) return
+        if (uiState.value.isLoading) return
         viewModelScope.launch {
             getCoins()
         }

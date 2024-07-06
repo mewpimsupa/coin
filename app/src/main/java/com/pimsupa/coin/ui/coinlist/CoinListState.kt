@@ -7,6 +7,7 @@ import com.pimsupa.coin.util.consumed
 
 data class CoinListState(
     val isLoading: Boolean = false,
+    val isRefresh: Boolean = false,
     val isError: Boolean = false,
     val coins: List<Coin> = listOf(),
     val showCoinDetail: CoinDetail? = null,

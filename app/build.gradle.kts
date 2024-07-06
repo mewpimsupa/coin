@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose)
-    id (libs.plugins.hilt.get().pluginId)
+    id(libs.plugins.hilt.get().pluginId)
     id("kotlin-kapt")
 }
 
@@ -94,4 +94,7 @@ dependencies {
     implementation("io.coil-kt:coil-svg:2.6.0")
 
     implementation(libs.androidx.material3)
+
+    implementation(libs.androidx.material)
+    implementation(libs.androidx.lifecycle.viewModelCompose)
 }

@@ -1,6 +1,7 @@
 package com.pimsupa.coin.ui.coinlist
 
 import android.util.Log
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,9 +12,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -24,6 +29,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,9 +49,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
-import kotlin.reflect.jvm.internal.impl.descriptors.Visibilities.Local
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,7 +85,10 @@ fun CoinListScreen(
         }
     }
 
+
+
     CoinListScreenContent(uiState, onEvent)
+
 
     if (uiState.showCoinDetail != null)
         CoinDetail(
@@ -96,7 +103,7 @@ fun CoinListScreen(
 }
 
 
-@OptIn(FlowPreview::class)
+@OptIn(FlowPreview::class, ExperimentalMaterialApi::class)
 @Composable
 fun CoinListScreenContent(
     state: CoinListState,
@@ -107,7 +114,12 @@ fun CoinListScreenContent(
     val listState = rememberLazyListState()
     val coins by rememberUpdatedState(newValue = state.coins)
 
-
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = state.isRefresh,
+        onRefresh = {
+            event.invoke(CoinListEvent.RefreshCoins)
+        }
+    )
     LaunchedEffect(state.isLoading) {
         snapshotFlow {
             listState.layoutInfo.visibleItemsInfo
@@ -123,38 +135,53 @@ fun CoinListScreenContent(
                 }
             }
     }
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        state = listState,
-    ) {
-        item {
-            Text(
-                modifier = Modifier.padding(vertical = 20.dp, horizontal = 16.dp),
-                text = stringResource(id = R.string.title_buy_sell_hold_crypto),
-                style = textStyle.titleBold,
-                color = color.allBlack
-            )
-        }
-        items(coins) { coin ->
-            CoinItem(coin) {
-                event.invoke(CoinListEvent.OnClickCoin(coin))
-            }
-        }
-        item {
-            if (state.isLoading) {
-                Spacer(modifier = Modifier.height(12.dp))
-                Loading()
-            }
-            if (state.isError) {
-                CoinListError {
-                    event.invoke(CoinListEvent.OnClickLoadCoinsAgain)
+    Scaffold { padding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .pullRefresh(pullRefreshState)
+        ) {
+
+            LazyColumn(
+                modifier = Modifier.pullRefresh(pullRefreshState),
+                state = listState,
+            ) {
+                item {
+                    Text(
+                        modifier = Modifier.padding(vertical = 20.dp, horizontal = 16.dp),
+                        text = stringResource(id = R.string.title_buy_sell_hold_crypto),
+                        style = textStyle.titleBold,
+                        color = color.allBlack
+                    )
+                }
+                items(coins) { coin ->
+                    CoinItem(coin) {
+                        event.invoke(CoinListEvent.OnClickCoin(coin))
+                    }
+                }
+                item {
+                    if (state.isLoading && !state.isRefresh) {
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Loading()
+                    }
+                    if (state.isError) {
+                        CoinListError {
+                            event.invoke(CoinListEvent.OnClickLoadCoinsAgain)
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(64.dp))
                 }
             }
-            Spacer(modifier = Modifier.height(64.dp))
+
+            PullRefreshIndicator(
+                refreshing = state.isRefresh,
+                state = pullRefreshState,
+                modifier = Modifier.align(Alignment.TopCenter)
+            )
         }
-
-
     }
+
 }
 
 @Composable
