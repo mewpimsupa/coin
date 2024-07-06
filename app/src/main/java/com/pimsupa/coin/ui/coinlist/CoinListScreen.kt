@@ -12,11 +12,16 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
@@ -28,7 +33,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.pimsupa.coin.R
 import com.pimsupa.coin.domain.model.Coin
+import com.pimsupa.coin.ui.coinlist.component.CoinDetail
 import com.pimsupa.coin.ui.coinlist.component.CoinItem
+import com.pimsupa.coin.util.LaunchedEventEffect
 import com.pimsupa.coin.util.LocalCoinColor
 import com.pimsupa.coin.util.LocalCoinTextStyle
 import kotlinx.coroutines.FlowPreview
@@ -39,6 +46,7 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import kotlin.reflect.jvm.internal.impl.descriptors.Visibilities.Local
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CoinListScreen(
     viewModel: CoinListViewModel = hiltViewModel()
@@ -47,9 +55,39 @@ fun CoinListScreen(
     val uiState = viewModel.uiState.collectAsState().value
     val onEvent = viewModel::onEvent
 
+    val bottomSheetState = rememberModalBottomSheetState()
+    val openBottomSheet = remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+
+    LaunchedEventEffect(
+        event = uiState.uiEvent,
+        onConsumed = { viewModel.onStateEventConsumed() },
+    ) {
+        when (it) {
+            is CoinListUiEvent.OpenCoinDetail -> {
+                scope.launch {
+                    openBottomSheet.value = true
+                    bottomSheetState.show()
+                }
+            }
+
+            is CoinListUiEvent.CloseCoinDetail -> {
+                scope.launch {
+                    openBottomSheet.value = false
+                    bottomSheetState.hide()
+                }
+            }
+        }
+    }
 
     CoinListScreenContent(uiState, onEvent)
 
+    if (uiState.showCoinDetail != null)
+        CoinDetail(
+            coin = uiState.showCoinDetail,
+            onDismiss = { onEvent.invoke(CoinListEvent.OnDismissCoinDetail) },
+            bottomSheetState = bottomSheetState
+        )
 }
 
 
@@ -63,6 +101,7 @@ fun CoinListScreenContent(
     val color = LocalCoinColor.current
     val listState = rememberLazyListState()
     val coins by rememberUpdatedState(newValue = state.coins)
+
 
     LaunchedEffect(state.isLoading) {
         snapshotFlow {
@@ -92,8 +131,9 @@ fun CoinListScreenContent(
             )
         }
         items(coins) { coin ->
-            CoinItem(coin)
-
+            CoinItem(coin) {
+                event.invoke(CoinListEvent.OnClickCoin(coin))
+            }
         }
         item {
             if (state.isLoading) {

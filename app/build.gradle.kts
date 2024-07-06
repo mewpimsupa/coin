@@ -92,4 +92,6 @@ dependencies {
     implementation(libs.okhttp.logging)
     implementation(libs.coil.kt.compose)
     implementation("io.coil-kt:coil-svg:2.6.0")
+
+    implementation(libs.androidx.material3)
 }

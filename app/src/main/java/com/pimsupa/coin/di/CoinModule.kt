@@ -1,5 +1,7 @@
 package com.pimsupa.coin.di
 
+import com.pimsupa.coin.domain.usecase.GetCoinDetail
+import com.pimsupa.coin.domain.usecase.GetCoinDetailImpl
 import com.pimsupa.coin.domain.usecase.GetCoins
 import com.pimsupa.coin.domain.usecase.GetCoinsImpl
 import com.pimsupa.coin.util.CoinDispatchers
@@ -17,10 +19,16 @@ import javax.inject.Singleton
 @Module
 @InstallIn(ViewModelComponent::class)
 abstract class CoinModule {
+
     @Binds
     abstract fun bindsGetCoins(
         useCaseImpl: GetCoinsImpl,
     ): GetCoins
+
+    @Binds
+    abstract fun bindsGetCoinDetail(
+        useCaseImpl: GetCoinDetailImpl,
+    ): GetCoinDetail
 }
 
 

@@ -27,24 +27,50 @@ data class Coin(
     val tier: Int = -1,
     val uuid: String = "",
 ) {
-    fun roundPrice(): String {
+    fun symbolDetail(): String = "(${symbol})"
+
+    fun getCoinListPrice(): String = "$${formatDecimal(price, 5)}"
+    fun getCoinDetailPrice(): String = "$ ${formatDecimal(price, 2)}"
+    fun getCoinMarketCap(): String = "$ ${formatLargeNumber(marketCap)}"
+
+    fun formatLargeNumber(numberStr: String): String {
         return try {
-            val bd = BigDecimal(price).setScale(5, RoundingMode.HALF_UP)
-            val df = DecimalFormat("#,##0.00000")
-            "$${df.format(bd)}"
+            val number = numberStr.toLong()
+            val trillion = 1_000_000_000_000L
+            val billion = 1_000_000_000L
+            val million = 1_000_000L
+
+            val decimalFormat = DecimalFormat("#,##0.00")
+
+            when {
+                number >= trillion -> {
+                    val formatted = number.toDouble() / trillion
+                    decimalFormat.format(formatted) + " " + "trillion"
+                }
+
+                number >= billion -> {
+                    val formatted = number.toDouble() / billion
+                    decimalFormat.format(formatted) + " " + "billion"
+                }
+
+                number >= million -> {
+                    val formatted = number.toDouble() / million
+                    decimalFormat.format(formatted) + " " + "million"
+                }
+
+                else -> decimalFormat.format(number)
+            }
         } catch (e: NumberFormatException) {
-            // Handle the case where the input string is not a valid number
-            ""
+            "Invalid number"
         }
     }
 
-    private fun Double.roundTwoDecimal(): String {
+    fun formatDecimal(value: String, scale: Int): String {
         return try {
-            val bd = BigDecimal(this).setScale(2, RoundingMode.HALF_UP)
-            val df = DecimalFormat("#,##0.00")
-            "$${df.format(bd)}"
+            val bd = BigDecimal(value).setScale(scale, RoundingMode.HALF_UP)
+            val df = DecimalFormat("#,##0.${"0".repeat(scale)}")
+            df.format(bd)
         } catch (e: NumberFormatException) {
-            // Handle the case where the input string is not a valid number
             ""
         }
     }
@@ -52,17 +78,14 @@ data class Coin(
     fun isPositiveChange(): Pair<Boolean, String> {
         return try {
             val value = change.toDouble()
-            if (value > 0) {
-                Pair(true, makePositive(value).roundTwoDecimal())
-            } else {
-                Pair(false, makePositive(value).roundTwoDecimal())
-            }
+            val isPositive = value > 0
+            Pair(isPositive, formatDecimal(value.makePositive().toString(), 2))
         } catch (e: NumberFormatException) {
             Pair(false, "")
         }
     }
 
-    private fun makePositive(number: Double): Double {
-        return abs(number)
+    private fun Double.makePositive(): Double {
+        return abs(this)
     }
 }

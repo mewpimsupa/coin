@@ -30,12 +30,12 @@ import com.pimsupa.coin.util.LocalCoinTextStyle
 
 
 @Composable
-fun CoinItem(coin: Coin) {
+fun CoinItem(coin: Coin, onClickCoinItem: () -> Unit = {}) {
     val style = LocalCoinTextStyle.current
     val color = LocalCoinColor.current
 
     Card(
-        onClick = { /*TODO*/ },
+        onClick = onClickCoinItem,
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
@@ -70,7 +70,9 @@ fun CoinItem(coin: Coin) {
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = coin.roundPrice(), style = style.detailBold1, color = color.black,
+                        text = coin.getCoinListPrice(),
+                        style = style.detailBold1,
+                        color = color.black,
                         textAlign = TextAlign.End
                     )
                 }

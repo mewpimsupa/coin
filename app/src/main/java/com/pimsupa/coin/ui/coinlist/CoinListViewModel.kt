@@ -2,11 +2,14 @@ package com.pimsupa.coin.ui.coinlist
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.pimsupa.coin.domain.model.Coin
 import com.pimsupa.coin.domain.usecase.GetCoins
 import com.pimsupa.coin.util.BaseViewModel
 import com.pimsupa.coin.util.CoinDispatchers
 import com.pimsupa.coin.util.CoinException
 import com.pimsupa.coin.util.Dispatcher
+import com.pimsupa.coin.util.consumed
+import com.pimsupa.coin.util.triggered
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.catch
@@ -29,9 +32,11 @@ class CoinListViewModel @Inject constructor(
 
     fun onEvent(event: CoinListEvent) {
         when (event) {
-            is CoinListEvent.LoadCoins -> {
-                loadCoins()
-            }
+            is CoinListEvent.LoadCoins -> loadCoins()
+
+            is CoinListEvent.OnClickCoin -> onClickCoin(event.coin)
+
+            is CoinListEvent.OnDismissCoinDetail -> onDismissCoinDetail()
         }
     }
 
@@ -58,7 +63,7 @@ class CoinListViewModel @Inject constructor(
                     )
                 }
             }
-            .catch { exception ->
+            .catch { _ ->
                 setState {
                     copy(
                         isError = true,
@@ -79,5 +84,27 @@ class CoinListViewModel @Inject constructor(
             if (uiState.value.coins.isEmpty()) return@launch
             getCoins()
         }
+    }
+
+    private fun onClickCoin(coin: Coin) {
+        setState {
+            copy(
+                showCoinDetail = coin,
+                uiEvent = triggered(CoinListUiEvent.OpenCoinDetail(coin))
+            )
+        }
+    }
+
+    private fun onDismissCoinDetail() {
+        setState {
+            copy(
+                showCoinDetail = null,
+                uiEvent = triggered(CoinListUiEvent.CloseCoinDetail)
+            )
+        }
+    }
+
+    fun onStateEventConsumed() {
+        setState { copy(uiEvent = consumed()) }
     }
 }
