@@ -1,5 +1,6 @@
 package com.pimsupa.coin.ui.coinlist
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.pimsupa.coin.domain.usecase.GetCoins
 import com.pimsupa.coin.util.BaseViewModel
@@ -23,46 +24,49 @@ class CoinListViewModel @Inject constructor(private val getCoins: GetCoins) :
     }
 
     init {
-        setState {
-            copy(isLoading = true)
+        viewModelScope.launch {
+            setState {
+                copy(isLoading = true)
+            }
+            getCoins()
         }
-        getCoins()
     }
 
-    private fun getCoins() {
-        viewModelScope.launch {
-            getCoins.invoke(currentPage)
-                .onSuccess {
-                    setState {
-                        copy(
-                            coins = it,
-                            isLoading = false,
-                            isPagination = false
-                        )
-                    }
+    private suspend fun getCoins() {
+        getCoins.invoke(currentPage)
+            .onSuccess {
+                val coinList = uiState.value.coins.toMutableList()
+                coinList.addAll(it)
+                setState {
+                    copy(
+                        coins = coinList
+                    )
                 }
-                .onFailure {
-                    when (it) {
-                        is CoinException.CoinIsNullException, is CoinException.GetCoinsErrorException -> {
-                            setState {
-                                copy(
-                                    isError = true,
-                                    isLoading = false,
-                                    isPagination = false
-                                )
-                            }
+                setState { copy(isLoading = false) }
+            }
+            .onFailure {
+                when (it) {
+                    is CoinException.CoinIsNullException, is CoinException.GetCoinsErrorException -> {
+                        setState {
+                            copy(
+                                isError = true,
+                                isLoading = false,
+                            )
                         }
                     }
                 }
-        }
-
+            }
     }
 
+
     private fun loadCoins() {
-        setState {
-            copy(isPagination = true)
+        viewModelScope.launch {
+            if (uiState.value.coins.isEmpty()) return@launch
+            setState {
+                copy(isLoading = true)
+            }
+            currentPage++
+            getCoins()
         }
-        currentPage++
-        getCoins()
     }
 }

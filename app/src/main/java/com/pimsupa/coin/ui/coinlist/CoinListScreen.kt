@@ -1,9 +1,11 @@
 package com.pimsupa.coin.ui.coinlist
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,6 +16,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,8 +31,13 @@ import com.pimsupa.coin.domain.model.Coin
 import com.pimsupa.coin.ui.coinlist.component.CoinItem
 import com.pimsupa.coin.util.LocalCoinColor
 import com.pimsupa.coin.util.LocalCoinTextStyle
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.launch
+import kotlin.reflect.jvm.internal.impl.descriptors.Visibilities.Local
 
 @Composable
 fun CoinListScreen(
@@ -43,6 +53,7 @@ fun CoinListScreen(
 }
 
 
+@OptIn(FlowPreview::class)
 @Composable
 fun CoinListScreenContent(
     state: CoinListState,
@@ -51,16 +62,23 @@ fun CoinListScreenContent(
     val textStyle = LocalCoinTextStyle.current
     val color = LocalCoinColor.current
     val listState = rememberLazyListState()
+    val coins by rememberUpdatedState(newValue = state.coins)
 
-    LaunchedEffect(listState) {
-        snapshotFlow { listState.layoutInfo.visibleItemsInfo }
+    LaunchedEffect(state.isLoading) {
+        snapshotFlow {
+            listState.layoutInfo.visibleItemsInfo
+        }
+            .debounce(300)
+            .distinctUntilChanged()
             .collectLatest { visibleItems ->
-                if (visibleItems.isNotEmpty() && visibleItems.last().index == state.coins.size - 1 && !state.isPagination) {
-                    event.invoke(CoinListEvent.LoadCoins)
+                val lastVisibleItemIndex = visibleItems.lastOrNull()?.index ?: 0
+                val totalItems = coins.size
+                if (lastVisibleItemIndex >= totalItems - 1 && !state.isLoading) {
+                    Log.d("test", "load more coins")
+                    event(CoinListEvent.LoadCoins)
                 }
             }
     }
-
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         state = listState,
@@ -73,34 +91,33 @@ fun CoinListScreenContent(
                 color = color.allBlack
             )
         }
+        items(coins) { coin ->
+            CoinItem(coin)
+
+        }
         item {
             if (state.isLoading) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 12.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(40.dp),
-                        color = color.blue
-                    )
-                }
+                Spacer(modifier = Modifier.height(12.dp))
+                Loading()
             }
+            Spacer(modifier = Modifier.height(100.dp))
         }
-        items(state.coins) { coin ->
-            // compose
-            CoinItem(coin)
-        }
-        item {
-            if (state.isPagination) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(40.dp),
-                    color = color.blue
-                )
-            }
-        }
+    }
+}
 
+@Composable
+fun Loading() {
+    val color = LocalCoinColor.current
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        CircularProgressIndicator(
+            modifier = Modifier.size(40.dp),
+            color = color.blue
+        )
     }
 }
 
