@@ -59,18 +59,15 @@ class CoinListViewModel @Inject constructor(
                 }
             }
             .catch { exception ->
-                when (exception) {
-                    is CoinException.CoinIsNullException, is CoinException.GetCoinsErrorException -> {
-                        setState {
-                            copy(
-                                isError = true,
-                                isLoading = false,
-                            )
-                        }
-                    }
+                setState {
+                    copy(
+                        isError = true,
+                        isLoading = false
+                    )
                 }
             }
             .onCompletion {
+                currentPage++
                 setState { copy(isLoading = false) }
             }
             .collect()
@@ -80,10 +77,6 @@ class CoinListViewModel @Inject constructor(
     private fun loadCoins() {
         viewModelScope.launch {
             if (uiState.value.coins.isEmpty()) return@launch
-            setState {
-                copy(isLoading = true)
-            }
-            currentPage++
             getCoins()
         }
     }
