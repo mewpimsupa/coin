@@ -117,7 +117,7 @@ fun CoinListScreenContent(
             .collectLatest { visibleItems ->
                 val lastVisibleItemIndex = visibleItems.lastOrNull()?.index ?: 0
                 val totalItems = coins.size
-                if (lastVisibleItemIndex >= totalItems - 1 && !state.isLoading) {
+                if (lastVisibleItemIndex >= totalItems - 1 && !state.isLoading && !state.isError) {
                     Log.d("test", "load more coins")
                     event(CoinListEvent.LoadCoins)
                 }
@@ -135,26 +135,24 @@ fun CoinListScreenContent(
                 color = color.allBlack
             )
         }
-        if (state.isError) {
-            item {
+        items(coins) { coin ->
+            CoinItem(coin) {
+                event.invoke(CoinListEvent.OnClickCoin(coin))
+            }
+        }
+        item {
+            if (state.isLoading) {
+                Spacer(modifier = Modifier.height(12.dp))
+                Loading()
+            }
+            if (state.isError) {
                 CoinListError {
                     event.invoke(CoinListEvent.OnClickLoadCoinsAgain)
                 }
             }
-        } else {
-            items(coins) { coin ->
-                CoinItem(coin) {
-                    event.invoke(CoinListEvent.OnClickCoin(coin))
-                }
-            }
-            item {
-                if (state.isLoading) {
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Loading()
-                }
-                Spacer(modifier = Modifier.height(100.dp))
-            }
+            Spacer(modifier = Modifier.height(64.dp))
         }
+
 
     }
 }
