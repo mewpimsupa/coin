@@ -1,9 +1,9 @@
 package com.pimsupa.coin.data.mapper
 
-import com.pimsupa.coin.data.getcoins.Coin
+import com.pimsupa.coin.data.remote.coindetail.Coin
 import com.pimsupa.coin.domain.model.CoinDetail
 
-fun Coin.toCoin(): com.pimsupa.coin.domain.model.Coin {
+fun com.pimsupa.coin.data.remote.getcoins.Coin.toCoin(): com.pimsupa.coin.domain.model.Coin {
     return com.pimsupa.coin.domain.model.Coin(
         name = this.name ?: "",
         iconUrl = this.iconUrl ?: "",
@@ -25,7 +25,7 @@ fun Coin.toCoin(): com.pimsupa.coin.domain.model.Coin {
     )
 }
 
-fun com.pimsupa.coin.data.coindetail.Coin.toCoinDetail(): CoinDetail {
+fun Coin.toCoinDetail(): CoinDetail {
     return CoinDetail(
         color = this.color ?: "",
         description = this.description ?: "",

@@ -97,6 +97,11 @@ dependencies {
 
     implementation(libs.androidx.material)
     implementation(libs.androidx.lifecycle.viewModelCompose)
-    
+
     implementation(libs.androidx.work.ktx)
+
+
+    kapt(libs.room.compiler)
+    implementation(libs.room.ktx)
+    implementation(libs.room.runtime)
 }

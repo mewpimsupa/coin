@@ -1,4 +1,4 @@
-package com.pimsupa.coin.data.getcoins
+package com.pimsupa.coin.data.remote.getcoins
 
 
 import com.squareup.moshi.Json

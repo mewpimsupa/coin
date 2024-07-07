@@ -1,7 +1,7 @@
-package com.pimsupa.coin.data
+package com.pimsupa.coin.data.remote
 
-import com.pimsupa.coin.data.coindetail.CoinDetailResponse
-import com.pimsupa.coin.data.getcoins.CoinsResponse
+import com.pimsupa.coin.data.remote.coindetail.CoinDetailResponse
+import com.pimsupa.coin.data.remote.getcoins.CoinsResponse
 import com.pimsupa.coin.util.BaseResponse
 import retrofit2.Response
 import retrofit2.http.GET

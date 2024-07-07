@@ -1,8 +1,11 @@
 package com.pimsupa.coin.di
 
+import android.app.Application
 import android.content.Context
+import androidx.room.Room
 import androidx.work.WorkManager
-import com.pimsupa.coin.data.CoinApi
+import com.pimsupa.coin.data.local.CoinDatabase
+import com.pimsupa.coin.data.remote.CoinApi
 import com.pimsupa.coin.data.repository.CoinRepositoryImpl
 import com.pimsupa.coin.domain.repository.CoinRepository
 import com.pimsupa.coin.domain.usecase.GetCoinDetail
@@ -81,5 +84,15 @@ object CoinSingletonModule {
         @ApplicationContext context: Context
     ): WorkManager {
         return WorkManager.getInstance(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideMasterDatabase(app: Application): CoinDatabase {
+        return Room.databaseBuilder(
+            app,
+            CoinDatabase::class.java,
+            "coin_db",
+        ).fallbackToDestructiveMigration().build()
     }
 }

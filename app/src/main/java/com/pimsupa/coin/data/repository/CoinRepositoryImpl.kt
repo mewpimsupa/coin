@@ -1,6 +1,6 @@
 package com.pimsupa.coin.data.repository
 
-import com.pimsupa.coin.data.CoinApi
+import com.pimsupa.coin.data.remote.CoinApi
 import com.pimsupa.coin.data.mapper.toCoin
 import com.pimsupa.coin.data.mapper.toCoinDetail
 import com.pimsupa.coin.domain.model.Coin

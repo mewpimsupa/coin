@@ -1,10 +1,10 @@
 package com.pimsupa.coin.domain.model
 
 import com.pimsupa.coin.R
-import com.pimsupa.coin.data.coindetail.AllTimeHigh
-import com.pimsupa.coin.data.coindetail.Link
-import com.pimsupa.coin.data.coindetail.Notice
-import com.pimsupa.coin.data.coindetail.Supply
+import com.pimsupa.coin.data.remote.coindetail.AllTimeHigh
+import com.pimsupa.coin.data.remote.coindetail.Link
+import com.pimsupa.coin.data.remote.coindetail.Notice
+import com.pimsupa.coin.data.remote.coindetail.Supply
 import com.pimsupa.coin.util.UiText
 import com.pimsupa.coin.util.formatDecimal
 import com.squareup.moshi.Json

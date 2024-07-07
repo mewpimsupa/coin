@@ -1,7 +1,7 @@
 package com.pimsupa.coin.di
 
-import com.pimsupa.coin.data.AuthAuthenticator
-import com.pimsupa.coin.data.CoinApi
+import com.pimsupa.coin.data.remote.AuthAuthenticator
+import com.pimsupa.coin.data.remote.CoinApi
 import com.pimsupa.coin.util.Configs
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory

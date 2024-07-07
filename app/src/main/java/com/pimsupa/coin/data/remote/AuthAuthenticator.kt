@@ -1,6 +1,5 @@
-package com.pimsupa.coin.data
+package com.pimsupa.coin.data.remote
 
-import android.util.Log
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
 import okhttp3.Request
