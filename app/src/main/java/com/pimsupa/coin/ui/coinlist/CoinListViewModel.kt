@@ -80,7 +80,7 @@ class CoinListViewModel @Inject constructor(
                 setState {
                     copy(
                         coins = updatedCoins,
-                        filteredCoins = updatedCoins,
+                        filteredCoins = updatedCoins.drop(3),
                         isError = false
                     )
                 }
@@ -174,7 +174,7 @@ class CoinListViewModel @Inject constructor(
     }
 
     private fun searchText(text: TextFieldValue) {
-        if (text.text.isEmpty()) setState { copy(filteredCoins = uiState.value.coins) }
+        if (text.text.isEmpty()) setState { copy(filteredCoins = uiState.value.coins.drop(3)) }
         setState { copy(searchText = mutableStateOf(text)) }
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
@@ -199,7 +199,7 @@ class CoinListViewModel @Inject constructor(
         setState {
             copy(
                 searchText = mutableStateOf("".toTextFieldValue()),
-                filteredCoins = uiState.value.coins
+                filteredCoins = uiState.value.coins.drop(3)
             )
         }
     }

@@ -10,4 +10,7 @@
     <string name="text_not_found_title">Sorry</string>
     <string name="text_not_found_sub_title">No result match this keyword</string>
     <string name="text_no_data">no data</string>
+    <string name="text_top">Top</string>
+    <string name="text_3">3</string>
+    <string name="text_rank_crypto">rank crypto</string>
 </resources>

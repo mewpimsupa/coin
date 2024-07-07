@@ -2,16 +2,18 @@ package com.pimsupa.coin.ui.coinlist
 
 import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -51,6 +53,8 @@ import com.pimsupa.coin.ui.coinlist.component.CoinDetail
 import com.pimsupa.coin.ui.coinlist.component.CoinItem
 import com.pimsupa.coin.ui.coinlist.component.CoinListError
 import com.pimsupa.coin.ui.coinlist.component.CoinListSearchNotFound
+import com.pimsupa.coin.ui.coinlist.component.Top3Coin
+import com.pimsupa.coin.ui.coinlist.component.Top3Text
 import com.pimsupa.coin.util.LaunchedEventEffect
 import com.pimsupa.coin.util.LocalCoinColor
 import com.pimsupa.coin.util.LocalCoinTextStyle
@@ -169,7 +173,7 @@ fun CoinListScreenContent(
                         )
                     },
                     trailingIcon = {
-                        if(state.searchText.value.text.isNotBlank()){
+                        if (state.searchText.value.text.isNotBlank()) {
                             Image(
                                 modifier = Modifier
                                     .padding(4.dp)
@@ -193,6 +197,35 @@ fun CoinListScreenContent(
                     modifier = Modifier.pullRefresh(pullRefreshState),
                     state = listState,
                 ) {
+                    item {
+                        if(coins.isNotEmpty()){
+                            Top3Text(
+                                modifier = Modifier.padding(
+                                    top = 16.dp,
+                                    start = 16.dp,
+                                    end = 16.dp
+                                )
+                            )
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 12.dp, start = 15.dp, end = 15.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                            ) {
+                                state.getTop3Coins().forEach {
+                                    Box(
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .padding(horizontal = 4.dp)
+                                            .wrapContentHeight()
+                                    ) {
+                                        Top3Coin(coin = it)
+                                    }
+                                }
+                            }
+                        }
+
+                    }
                     item {
                         Text(
                             modifier = Modifier.padding(vertical = 20.dp, horizontal = 16.dp),
@@ -256,8 +289,10 @@ fun CoinListScreenPreview() {
         state = CoinListState(
             coins = listOf(
                 Coin(name = "test coin1", change = "-3.22"),
+                Coin(name = "test coin2", change = "3.22"),
+                Coin(name = "test coin2", change = "3.22"),
                 Coin(name = "test coin2", change = "3.22")
-            )
+            ),
         ), event = {}
     )
 }
@@ -271,6 +306,8 @@ fun CoinListScreenErrorPreview() {
             isError = true,
             coins = listOf(
                 Coin(name = "test coin1", change = "-3.22"),
+                Coin(name = "test coin2", change = "3.22"),
+                Coin(name = "test coin2", change = "3.22"),
                 Coin(name = "test coin2", change = "3.22")
             )
         ), event = {}
