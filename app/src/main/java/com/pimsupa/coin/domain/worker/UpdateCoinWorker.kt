@@ -7,7 +7,9 @@ import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.pimsupa.coin.domain.model.Coin
@@ -18,6 +20,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+import java.util.concurrent.TimeUnit
 
 @HiltWorker
 class UpdateCoinWorker @AssistedInject constructor(
@@ -29,7 +32,7 @@ class UpdateCoinWorker @AssistedInject constructor(
     override suspend fun doWork(): Result = try {
         withContext(ioDispatcher) {
             Log.d("UpdateCoinWorker", "SyncWorker started")
-            val offset = inputData.getInt(OFFSET, 0)
+            val offset = inputData.getInt(LIMIT, 0)
 
             val updateCoinFlow = coinRepository.updateCoin(offset)
             val coinList = mutableListOf<Coin>()
@@ -37,8 +40,9 @@ class UpdateCoinWorker @AssistedInject constructor(
                 coinList.addAll(coins)
             }
             if (coinList.isNotEmpty()) {
-                Result.success(workDataOf(COIN_DATA to coinList.map { it.toString() }
-                    .toTypedArray()))
+//                Result.success(workDataOf(COIN_DATA to coinList.map { it.toString() }
+//                    .toTypedArray()))
+                Result.success()
             } else {
                 Result.retry()
             }
@@ -49,15 +53,20 @@ class UpdateCoinWorker @AssistedInject constructor(
     }
 
     companion object {
-        const val OFFSET = "offset"
+        const val LIMIT = "limit"
         const val COIN_DATA = "coin_data"
         val SyncConstraints
             get() = Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
 
-        fun request(offset: Data) = OneTimeWorkRequestBuilder<UpdateCoinWorker>().apply {
-            setConstraints(SyncConstraints)
-        }.setInputData(offset).build()
+        fun createWorkRequest(limit: Int,delay:Int): OneTimeWorkRequest {
+            val inputData = workDataOf(LIMIT to limit)
+            return OneTimeWorkRequestBuilder<UpdateCoinWorker>()
+                .setInputData(inputData)
+                .setConstraints(SyncConstraints)
+                .setInitialDelay(delay.toLong(), TimeUnit.SECONDS)
+                .build()
+        }
     }
 }

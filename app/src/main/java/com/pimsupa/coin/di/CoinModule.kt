@@ -1,5 +1,7 @@
 package com.pimsupa.coin.di
 
+import android.content.Context
+import androidx.work.WorkManager
 import com.pimsupa.coin.data.CoinApi
 import com.pimsupa.coin.data.repository.CoinRepositoryImpl
 import com.pimsupa.coin.domain.repository.CoinRepository
@@ -18,6 +20,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -71,4 +74,12 @@ object CoinSingletonModule {
 
     @Provides
     fun providesCoinRepository(coinApi: CoinApi): CoinRepository = CoinRepositoryImpl(api = coinApi)
+
+    @Provides
+    @Singleton
+    fun provideWorkManager(
+        @ApplicationContext context: Context
+    ): WorkManager {
+        return WorkManager.getInstance(context)
+    }
 }

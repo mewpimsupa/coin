@@ -57,9 +57,9 @@ class CoinRepositoryImpl @Inject constructor(private val api: CoinApi) : CoinRep
         }
     }
 
-    override fun updateCoin(offset: Int): Flow<List<Coin>> = flow{
+    override fun updateCoin(limit: Int): Flow<List<Coin>> = flow {
         try {
-            val response = api.getCoins(limit = null, offset = offset)
+            val response = api.getCoins(limit = limit, offset = null)
             if (response.isSuccessful) {
                 val data =
                     response.body()?.data ?: throw CoinException.CoinIsNullException()

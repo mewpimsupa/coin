@@ -8,6 +8,7 @@ import com.pimsupa.coin.domain.model.Coin
 import com.pimsupa.coin.domain.usecase.GetCoinDetail
 import com.pimsupa.coin.domain.usecase.GetCoins
 import com.pimsupa.coin.domain.usecase.SearchCoins
+import com.pimsupa.coin.domain.usecase.UpdateCoin
 import com.pimsupa.coin.util.BaseViewModel
 import com.pimsupa.coin.util.CoinDispatchers
 import com.pimsupa.coin.util.CoinException
@@ -34,6 +35,7 @@ class CoinListViewModel @Inject constructor(
     private val getCoins: GetCoins,
     private val getCoinDetail: GetCoinDetail,
     private val searchCoins: SearchCoins,
+    private val updateCoin: UpdateCoin,
     @Dispatcher(CoinDispatchers.Default) private val defaultDispatcher: CoroutineDispatcher
 ) :
     BaseViewModel<CoinListState>(CoinListState()) {
@@ -65,6 +67,18 @@ class CoinListViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             getCoins()
+
+            updateCoin.invoke(30)
+                .onEach { data ->
+                    val filteredCoins = data.filterOutTop3().calculateInviteFriendsList()
+                    setState {
+                        copy(
+                            coins = data,
+                            filteredCoins = filteredCoins,
+                            isError = false
+                        )
+                    }
+                }.collect()
         }
     }
 
