@@ -198,7 +198,7 @@ fun CoinListScreenContent(
                     state = listState,
                 ) {
                     item {
-                        if(coins.isNotEmpty()){
+                        if(coins.isNotEmpty() && state.searchText.value.text.isEmpty()){
                             Top3Text(
                                 modifier = Modifier.padding(
                                     top = 16.dp,
