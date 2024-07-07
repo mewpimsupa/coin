@@ -46,7 +46,7 @@ class UpdateCoinImpl @Inject constructor(
                     }
 
                     WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> {
-                        close()
+                        trySend(emptyList())
                     }
 
                     else -> {}

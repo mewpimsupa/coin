@@ -22,7 +22,7 @@ interface CoinDao {
     @Query("SELECT * FROM coin")
     fun getCoinList(): Flow<List<CoinEntity>>
 
-    @Query("SELECT * FROM coin LIMIT :limit OFFSET :offset")
+    @Query("SELECT * FROM coin ORDER BY rank LIMIT :limit OFFSET :offset")
     fun getCoinList(limit: Int, offset: Int): Flow<List<CoinEntity>>
 
     @Query("SELECT COUNT(*) FROM coin")
