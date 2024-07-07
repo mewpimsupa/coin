@@ -1,5 +1,6 @@
 package com.pimsupa.coin.di
 
+import com.pimsupa.coin.data.CoinApi
 import com.pimsupa.coin.data.repository.CoinRepositoryImpl
 import com.pimsupa.coin.domain.repository.CoinRepository
 import com.pimsupa.coin.domain.usecase.GetCoinDetail
@@ -8,6 +9,8 @@ import com.pimsupa.coin.domain.usecase.GetCoins
 import com.pimsupa.coin.domain.usecase.GetCoinsImpl
 import com.pimsupa.coin.domain.usecase.SearchCoins
 import com.pimsupa.coin.domain.usecase.SearchCoinsImpl
+import com.pimsupa.coin.domain.usecase.UpdateCoin
+import com.pimsupa.coin.domain.usecase.UpdateCoinImpl
 import com.pimsupa.coin.util.CoinDispatchers
 import com.pimsupa.coin.util.Dispatcher
 import dagger.Binds
@@ -38,10 +41,12 @@ abstract class CoinModule {
     abstract fun bindsSearchCoins(
         useCaseImpl: SearchCoinsImpl,
     ): SearchCoins
+
+
     @Binds
-    abstract fun bindsCoinRepository(
-        useCaseImpl: CoinRepositoryImpl,
-    ): CoinRepository
+    abstract fun bindsUpdateCoin(
+        useCaseImpl: UpdateCoinImpl,
+    ): UpdateCoin
 }
 
 
@@ -63,4 +68,7 @@ object CoinSingletonModule {
     @Provides
     @Dispatcher(CoinDispatchers.Unconfined)
     fun providesUnconfinedDispatcher(): CoroutineDispatcher = Dispatchers.Unconfined
+
+    @Provides
+    fun providesCoinRepository(coinApi: CoinApi): CoinRepository = CoinRepositoryImpl(api = coinApi)
 }

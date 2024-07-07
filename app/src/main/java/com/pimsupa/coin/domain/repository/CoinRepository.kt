@@ -8,4 +8,5 @@ interface CoinRepository {
     fun getCoins(page: Int): Flow<List<Coin>>
     fun getCoinDetail(uuid: String): Flow<CoinDetail>
     fun searchCoin(keyword: String): Flow<List<Coin>>
+    fun updateCoin(offset:Int): Flow<List<Coin>>
 }

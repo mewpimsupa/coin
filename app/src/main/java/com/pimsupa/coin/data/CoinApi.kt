@@ -12,7 +12,7 @@ interface CoinApi {
 
     @GET("coins")
     suspend fun getCoins(
-        @Query("limit") limit: Int,
+        @Query("limit") limit: Int?,
         @Query("offset") offset: Int
     ): Response<BaseResponse<CoinsResponse>>
 
