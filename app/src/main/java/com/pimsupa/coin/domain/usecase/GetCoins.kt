@@ -23,7 +23,7 @@ class GetCoinsImpl @Inject constructor(
 ) : GetCoins {
     override fun invoke(page: Int): Flow<List<Coin>> = flow {
         try {
-            val response = api.getCoins(limit = 20, offset = page)
+            val response = api.getCoins(limit = 20, offset = page * 20)
             if (response.isSuccessful) {
                 val data =
                     response.body()?.data ?: throw CoinException.CoinIsNullException()

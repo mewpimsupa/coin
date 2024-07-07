@@ -174,7 +174,10 @@ class CoinListViewModel @Inject constructor(
     }
 
     private fun searchText(text: TextFieldValue) {
-        if (text.text.isEmpty()) setState { copy(filteredCoins = uiState.value.coins.drop(3)) }
+        if (text.text.isEmpty()) {
+            setState { copy(filteredCoins = uiState.value.coins.drop(3)) }
+            return
+        }
         setState { copy(searchText = mutableStateOf(text)) }
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
