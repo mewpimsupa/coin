@@ -57,6 +57,8 @@ class CoinListViewModel @Inject constructor(
 
             is CoinListEvent.OnSearch -> searchText(event.searchText)
             is CoinListEvent.ClearSearchText -> clearSearchText()
+
+            is CoinListEvent.OnClickInviteFriends -> onClickInviteFiends()
         }
     }
 
@@ -77,10 +79,11 @@ class CoinListViewModel @Inject constructor(
                     coinList.addAll(data)
                     coinList
                 }
+                val filteredCoins = updatedCoins.filterOutTop3().calculateInviteFriendsList()
                 setState {
                     copy(
                         coins = updatedCoins,
-                        filteredCoins = updatedCoins.drop(3),
+                        filteredCoins = filteredCoins,
                         isError = false
                     )
                 }
@@ -174,38 +177,80 @@ class CoinListViewModel @Inject constructor(
     }
 
     private fun searchText(text: TextFieldValue) {
-        if (text.text.isEmpty()) {
-            setState { copy(filteredCoins = uiState.value.coins.drop(3)) }
-            return
-        }
-        setState { copy(searchText = mutableStateOf(text)) }
-        searchJob?.cancel()
-        searchJob = viewModelScope.launch {
-            searchCoins.invoke(text.text)
-                .onStart {
-                    delay(500)
-                    Log.d("performSearch", "Started search for query: $text")
+        viewModelScope.launch {
+            if (text.text.isEmpty()) {
+                val filteredCoins = uiState.value.coins.filterOutTop3().calculateInviteFriendsList()
+                setState {
+                    copy(
+                        filteredCoins = filteredCoins
+                    )
                 }
-                .onEach { coins ->
-                    Log.d("performSearch", "Received coins: $coins")
-                    setState { copy(filteredCoins = coins, isError = false) }
-                }
-                .catch {
-                    //no requirement
-                    Log.e("performSearch", "Error during search", it)
-                }
-                .collect()
+                return@launch
+            }
+            setState { copy(searchText = mutableStateOf(text)) }
+            searchJob?.cancel()
+            searchJob = viewModelScope.launch {
+                searchCoins.invoke(text.text)
+                    .onStart {
+                        delay(500)
+                        Log.d("performSearch", "Started search for query: $text")
+                    }
+                    .onEach { coins ->
+                        Log.d("performSearch", "Received coins: $coins")
+                        val filteredCoins = coins.calculateInviteFriendsList()
+                        setState {
+                            copy(
+                                filteredCoins = filteredCoins,
+                                isError = false
+                            )
+                        }
+                    }
+                    .catch {
+                        //no requirement
+                        Log.e("performSearch", "Error during search", it)
+                    }
+                    .collect()
+            }
+
         }
     }
 
     private fun clearSearchText() {
+        viewModelScope.launch {
+            val filteredCoins = uiState.value.coins.filterOutTop3().calculateInviteFriendsList()
+            setState {
+                copy(
+                    searchText = mutableStateOf("".toTextFieldValue()),
+                    filteredCoins = filteredCoins
+                )
+            }
+        }
+
+    }
+
+    private fun onClickInviteFiends() {
         setState {
             copy(
-                searchText = mutableStateOf("".toTextFieldValue()),
-                filteredCoins = uiState.value.coins.drop(3)
+                uiEvent = triggered(CoinListUiEvent.OpenInviteFriends("https://careers.lmwn.com"))
             )
         }
     }
+
+    fun List<Coin>.filterOutTop3(): List<Coin> {
+        return this.drop(3)
+    }
+
+    private suspend fun List<Coin>.calculateInviteFriendsList(): List<ItemDisplay> =
+        withContext(defaultDispatcher) {
+            var position = 5
+            val displayCoinList: MutableList<ItemDisplay> =
+                this@calculateInviteFriendsList.map { ItemDisplay.CoinItem(it) }.toMutableList()
+            while (position < displayCoinList.size) {
+                displayCoinList.add(position - 1, ItemDisplay.InviteFriends)
+                position *= 2
+            }
+            return@withContext displayCoinList
+        }
 
     fun onStateEventConsumed() {
         setState { copy(uiEvent = consumed()) }

@@ -1,5 +1,7 @@
 package com.pimsupa.coin.ui.coinlist
 
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -17,7 +19,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
@@ -38,10 +39,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -53,12 +54,12 @@ import com.pimsupa.coin.ui.coinlist.component.CoinDetail
 import com.pimsupa.coin.ui.coinlist.component.CoinItem
 import com.pimsupa.coin.ui.coinlist.component.CoinListError
 import com.pimsupa.coin.ui.coinlist.component.CoinListSearchNotFound
+import com.pimsupa.coin.ui.coinlist.component.InviteFriends
 import com.pimsupa.coin.ui.coinlist.component.Top3Coin
 import com.pimsupa.coin.ui.coinlist.component.Top3Text
 import com.pimsupa.coin.util.LaunchedEventEffect
 import com.pimsupa.coin.util.LocalCoinColor
 import com.pimsupa.coin.util.LocalCoinTextStyle
-import com.pimsupa.coin.util.toTextFieldValue
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
@@ -77,6 +78,7 @@ fun CoinListScreen(
     val bottomSheetState = rememberModalBottomSheetState()
     val openBottomSheet = remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     LaunchedEventEffect(
         event = uiState.uiEvent,
@@ -95,6 +97,11 @@ fun CoinListScreen(
                     openBottomSheet.value = false
                     bottomSheetState.hide()
                 }
+            }
+
+            is CoinListUiEvent.OpenInviteFriends -> {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(it.url))
+                context.startActivity(intent)
             }
         }
     }
@@ -198,7 +205,7 @@ fun CoinListScreenContent(
                     state = listState,
                 ) {
                     item {
-                        if(coins.isNotEmpty() && state.searchText.value.text.isEmpty()){
+                        if (coins.isNotEmpty() && state.searchText.value.text.isEmpty()) {
                             Top3Text(
                                 modifier = Modifier.padding(
                                     top = 16.dp,
@@ -234,9 +241,19 @@ fun CoinListScreenContent(
                             color = color.allBlack
                         )
                     }
-                    items(coins) { coin ->
-                        CoinItem(coin) {
-                            event.invoke(CoinListEvent.OnClickCoin(coin))
+                    items(coins) { filterCoin ->
+                        when (filterCoin) {
+                            is ItemDisplay.InviteFriends -> {
+                                InviteFriends {
+                                    event.invoke(CoinListEvent.OnClickInviteFriends)
+                                }
+                            }
+
+                            is ItemDisplay.CoinItem -> {
+                                CoinItem(filterCoin.coin) {
+                                    event.invoke(CoinListEvent.OnClickCoin(filterCoin.coin))
+                                }
+                            }
                         }
                     }
                     item {

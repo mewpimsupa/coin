@@ -13,7 +13,7 @@ data class CoinListState(
     val isRefresh: Boolean = false,
     val isError: Boolean = false,
     val coins: List<Coin> = listOf(),
-    val filteredCoins: List<Coin> = listOf(),
+    val filteredCoins: List<ItemDisplay> = listOf(),
     val showCoinDetail: CoinDetail? = null,
     val isFullScreenLoading: Boolean = false,
     val searchText: MutableState<TextFieldValue> = mutableStateOf(TextFieldValue("")),
@@ -26,5 +26,7 @@ data class CoinListState(
     }
 }
 
-
-data class CoinItemDisplay(val coin: Coin, val isInviteFriends: Boolean = false)
+sealed class ItemDisplay {
+    data object InviteFriends : ItemDisplay()
+    data class CoinItem(val coin: Coin):ItemDisplay()
+}

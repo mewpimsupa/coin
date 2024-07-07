@@ -3,6 +3,7 @@ package com.pimsupa.coin.ui.coinlist
 import com.pimsupa.coin.domain.model.Coin
 
 sealed class CoinListUiEvent {
-   data object OpenCoinDetail : CoinListUiEvent()
+    data object OpenCoinDetail : CoinListUiEvent()
     data object CloseCoinDetail : CoinListUiEvent()
+    data class OpenInviteFriends(val url: String) : CoinListUiEvent()
 }

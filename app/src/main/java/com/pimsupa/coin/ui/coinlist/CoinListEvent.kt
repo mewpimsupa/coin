@@ -12,4 +12,5 @@ sealed class CoinListEvent {
     data class OnSearch(val searchText: TextFieldValue) : CoinListEvent()
     data object ClearSearchText : CoinListEvent()
     data object LoadMoreCoins : CoinListEvent()
+    data object OnClickInviteFriends : CoinListEvent()
 }
