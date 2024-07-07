@@ -21,4 +21,9 @@ interface CoinApi {
         @Path("uuid") uuid: String,
     ): Response<BaseResponse<CoinDetailResponse>>
 
+    @GET("coins")
+    suspend fun searchCoins(
+        @Query("search") keyword: String,
+    ): Response<BaseResponse<CoinsResponse>>
+
 }

@@ -4,6 +4,8 @@ import com.pimsupa.coin.domain.usecase.GetCoinDetail
 import com.pimsupa.coin.domain.usecase.GetCoinDetailImpl
 import com.pimsupa.coin.domain.usecase.GetCoins
 import com.pimsupa.coin.domain.usecase.GetCoinsImpl
+import com.pimsupa.coin.domain.usecase.SearchCoins
+import com.pimsupa.coin.domain.usecase.SearchCoinsImpl
 import com.pimsupa.coin.util.CoinDispatchers
 import com.pimsupa.coin.util.Dispatcher
 import dagger.Binds
@@ -29,6 +31,11 @@ abstract class CoinModule {
     abstract fun bindsGetCoinDetail(
         useCaseImpl: GetCoinDetailImpl,
     ): GetCoinDetail
+
+    @Binds
+    abstract fun bindsSearchCoins(
+        useCaseImpl: SearchCoinsImpl,
+    ): SearchCoins
 }
 
 

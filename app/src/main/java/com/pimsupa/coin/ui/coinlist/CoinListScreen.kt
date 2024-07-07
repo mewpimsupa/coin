@@ -3,6 +3,7 @@ package com.pimsupa.coin.ui.coinlist
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
@@ -22,6 +24,7 @@ import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -47,6 +50,7 @@ import com.pimsupa.coin.domain.model.Coin
 import com.pimsupa.coin.ui.coinlist.component.CoinDetail
 import com.pimsupa.coin.ui.coinlist.component.CoinItem
 import com.pimsupa.coin.ui.coinlist.component.CoinListError
+import com.pimsupa.coin.ui.coinlist.component.CoinListSearchNotFound
 import com.pimsupa.coin.util.LaunchedEventEffect
 import com.pimsupa.coin.util.LocalCoinColor
 import com.pimsupa.coin.util.LocalCoinTextStyle
@@ -118,7 +122,7 @@ fun CoinListScreenContent(
     val textStyle = LocalCoinTextStyle.current
     val color = LocalCoinColor.current
     val listState = rememberLazyListState()
-    val coins by rememberUpdatedState(newValue = state.coins)
+    val coins by rememberUpdatedState(newValue = state.filteredCoins)
 
     val pullRefreshState = rememberPullRefreshState(
         refreshing = state.isRefresh,
@@ -136,11 +140,13 @@ fun CoinListScreenContent(
                 val lastVisibleItemIndex = visibleItems.lastOrNull()?.index ?: 0
                 val totalItems = coins.size
                 if (lastVisibleItemIndex >= totalItems - 1 && !state.isLoading && !state.isError) {
-                    Log.d("test", "load more coins")
-                    event(CoinListEvent.LoadCoins)
+                    Log.d("test", "screen load more coins")
+                    event(CoinListEvent.LoadMoreCoins)
                 }
             }
     }
+
+
     Scaffold { padding ->
         Box(
             modifier = Modifier
@@ -148,60 +154,70 @@ fun CoinListScreenContent(
                 .padding(padding)
                 .pullRefresh(pullRefreshState)
         ) {
+            Column {
+                TextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    value = state.searchText.value,
+                    onValueChange = { text -> event.invoke(CoinListEvent.OnSearch(text)) },
+                    leadingIcon = {
+                        Image(
+                            modifier = Modifier.size(24.dp),
+                            painter = painterResource(id = R.drawable.ic_search),
+                            contentDescription = "icon search"
+                        )
+                    },
+                    trailingIcon = {
+                        Image(
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .size(16.dp)
+                                .clickable {
+                                    event.invoke(CoinListEvent.ClearSearchText)
+                                },
+                            painter = painterResource(id = R.drawable.ic_clear),
+                            contentDescription = "icon search"
+                        )
+                    },
+                    colors = TextFieldDefaults.textFieldColors(backgroundColor = color.lightGrey2)
+                )
+                HorizontalDivider()
 
-            LazyColumn(
-                modifier = Modifier.pullRefresh(pullRefreshState),
-                state = listState,
-            ) {
-                item {
-                    TextField(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        value = state.searchText.value,
-                        onValueChange = { text -> event.invoke(CoinListEvent.OnSearch(text)) },
-                        leadingIcon = {
-                            Image(
-                                modifier = Modifier.size(24.dp),
-                                painter = painterResource(id = R.drawable.ic_search),
-                                contentDescription = "icon search"
-                            )
-                        },
-                        trailingIcon = {
-                            Image(
-                                modifier = Modifier.size(10.dp),
-                                painter = painterResource(id = R.drawable.ic_clear),
-                                contentDescription = "icon search"
-                            )
-                        },
-                        colors = TextFieldDefaults.textFieldColors(backgroundColor = color.lightGrey2)
-                    )
+                if (state.searchNotFound()) {
+                    CoinListSearchNotFound()
                 }
-                item {
-                    Text(
-                        modifier = Modifier.padding(vertical = 20.dp, horizontal = 16.dp),
-                        text = stringResource(id = R.string.title_buy_sell_hold_crypto),
-                        style = textStyle.titleBold,
-                        color = color.allBlack
-                    )
-                }
-                items(coins) { coin ->
-                    CoinItem(coin) {
-                        event.invoke(CoinListEvent.OnClickCoin(coin))
+                LazyColumn(
+                    modifier = Modifier.pullRefresh(pullRefreshState),
+                    state = listState,
+                ) {
+                    item {
+                        Text(
+                            modifier = Modifier.padding(vertical = 20.dp, horizontal = 16.dp),
+                            text = stringResource(id = R.string.title_buy_sell_hold_crypto),
+                            style = textStyle.titleBold,
+                            color = color.allBlack
+                        )
                     }
-                }
-                item {
-                    if (state.isLoading && !state.isRefresh) {
-                        Spacer(modifier = Modifier.height(12.dp))
-                        Loading()
-                    }
-                    if (state.isError) {
-                        CoinListError {
-                            event.invoke(CoinListEvent.OnClickLoadCoinsAgain)
+                    items(coins) { coin ->
+                        CoinItem(coin) {
+                            event.invoke(CoinListEvent.OnClickCoin(coin))
                         }
                     }
-                    Spacer(modifier = Modifier.height(64.dp))
+                    item {
+                        if (state.isLoading && !state.isRefresh) {
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Loading()
+                        }
+                        if (state.isError) {
+                            CoinListError {
+                                event.invoke(CoinListEvent.OnClickLoadCoinsAgain)
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(64.dp))
+                    }
                 }
+
             }
 
             PullRefreshIndicator(

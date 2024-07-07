@@ -7,37 +7,37 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class Coin(
     @Json(name = "btcPrice")
-    val btcPrice: String,
+    val btcPrice: String?,
     @Json(name = "change")
-    val change: String,
+    val change: String?,
     @Json(name = "coinrankingUrl")
-    val coinRankingUrl: String,
+    val coinRankingUrl: String?,
     @Json(name = "color")
-    val color: String,
+    val color: String?,
     @Json(name = "contractAddresses")
-    val contractAddresses: List<String>,
+    val contractAddresses: List<String>?,
     @Json(name = "24hVolume")
-    val hVolume: String,
+    val hVolume: String?,
     @Json(name = "iconUrl")
-    val iconUrl: String,
+    val iconUrl: String?,
     @Json(name = "listedAt")
-    val listedAt: Int,
+    val listedAt: Int?,
     @Json(name = "lowVolume")
-    val lowVolume: Boolean,
+    val lowVolume: Boolean?,
     @Json(name = "marketCap")
-    val marketCap: String,
+    val marketCap: String?,
     @Json(name = "name")
-    val name: String,
+    val name: String?,
     @Json(name = "price")
-    val price: String,
+    val price: String?,
     @Json(name = "rank")
-    val rank: Int,
+    val rank: Int?,
     @Json(name = "sparkline")
-    val sparkline: List<String>,
+    val sparkline: List<String>?,
     @Json(name = "symbol")
-    val symbol: String,
+    val symbol: String?,
     @Json(name = "tier")
-    val tier: Int,
+    val tier: Int?,
     @Json(name = "uuid")
-    val uuid: String
+    val uuid: String?
 )

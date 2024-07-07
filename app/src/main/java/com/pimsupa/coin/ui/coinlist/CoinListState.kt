@@ -13,12 +13,13 @@ data class CoinListState(
     val isRefresh: Boolean = false,
     val isError: Boolean = false,
     val coins: List<Coin> = listOf(),
+    val filteredCoins: List<Coin> = listOf(),
     val showCoinDetail: CoinDetail? = null,
     val isFullScreenLoading: Boolean = false,
     val searchText: MutableState<TextFieldValue> = mutableStateOf(TextFieldValue("")),
-    val searchCoinsList: List<Coin> = listOf(),
     var uiEvent: StateEvent<CoinListUiEvent> = consumed(),
 ) {
+    fun searchNotFound():Boolean =searchText.value.text.isNotBlank() && filteredCoins.isEmpty()
     fun getTop3Coins(): List<Coin> {
         return listOf()
     }
