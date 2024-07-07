@@ -58,10 +58,8 @@ class UpdateCoinWorker @AssistedInject constructor(
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
 
-        fun createWorkRequest(limit: Int,delay:Int): OneTimeWorkRequest {
-            val inputData = workDataOf(LIMIT to limit)
+        fun createWorkRequest(delay:Int): OneTimeWorkRequest {
             return OneTimeWorkRequestBuilder<UpdateCoinWorker>()
-                .setInputData(inputData)
                 .setConstraints(SyncConstraints)
                 .setInitialDelay(delay.toLong(), TimeUnit.SECONDS)
                 .build()

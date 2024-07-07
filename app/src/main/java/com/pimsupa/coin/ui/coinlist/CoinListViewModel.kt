@@ -67,18 +67,7 @@ class CoinListViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             getCoins()
-
-            updateCoin.invoke(30)
-                .onEach { data ->
-                    val filteredCoins = data.filterOutTop3().calculateInviteFriendsList()
-                    setState {
-                        copy(
-                            coins = data,
-                            filteredCoins = filteredCoins,
-                            isError = false
-                        )
-                    }
-                }.collect()
+            updateCoin.invoke()
         }
     }
 

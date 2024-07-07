@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,6 +43,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -162,6 +164,7 @@ fun CoinListScreenContent(
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .background(color = color.white)
                 .padding(padding)
                 .pullRefresh(pullRefreshState)
         ) {
@@ -176,7 +179,8 @@ fun CoinListScreenContent(
                         Image(
                             modifier = Modifier.size(24.dp),
                             painter = painterResource(id = R.drawable.ic_search),
-                            contentDescription = "icon search"
+                            contentDescription = "icon search",
+                            colorFilter = ColorFilter.tint(color = color.lightGrey3)
                         )
                     },
                     trailingIcon = {
