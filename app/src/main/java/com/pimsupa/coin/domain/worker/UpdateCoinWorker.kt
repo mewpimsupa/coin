@@ -5,11 +5,9 @@ import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
-import androidx.work.Data
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.pimsupa.coin.domain.model.Coin
@@ -32,16 +30,16 @@ class UpdateCoinWorker @AssistedInject constructor(
     override suspend fun doWork(): Result = try {
         withContext(ioDispatcher) {
             Log.d("UpdateCoinWorker", "SyncWorker started")
-            val offset = inputData.getInt(LIMIT, 0)
+            val count = coinRepository.getCoinCount()
+            if(count == 0) return@withContext Result.success()
 
-            val updateCoinFlow = coinRepository.updateCoin(offset)
+            val updateCoinFlow = coinRepository.updateCoins(coinRepository.getCoinCount())
             val coinList = mutableListOf<Coin>()
             updateCoinFlow.collect { coins ->
                 coinList.addAll(coins)
             }
+            coinRepository.updateLocalCoins(coinList)
             if (coinList.isNotEmpty()) {
-//                Result.success(workDataOf(COIN_DATA to coinList.map { it.toString() }
-//                    .toTypedArray()))
                 Result.success()
             } else {
                 Result.retry()

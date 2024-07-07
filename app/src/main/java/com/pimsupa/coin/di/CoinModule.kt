@@ -76,7 +76,8 @@ object CoinSingletonModule {
     fun providesUnconfinedDispatcher(): CoroutineDispatcher = Dispatchers.Unconfined
 
     @Provides
-    fun providesCoinRepository(coinApi: CoinApi): CoinRepository = CoinRepositoryImpl(api = coinApi)
+    fun providesCoinRepository(coinApi: CoinApi, db: CoinDatabase): CoinRepository =
+        CoinRepositoryImpl(api = coinApi, db = db)
 
     @Provides
     @Singleton

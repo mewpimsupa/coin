@@ -1,5 +1,6 @@
 package com.pimsupa.coin.data.mapper
 
+import com.pimsupa.coin.data.local.entity.CoinEntity
 import com.pimsupa.coin.data.remote.coindetail.Coin
 import com.pimsupa.coin.domain.model.CoinDetail
 
@@ -36,5 +37,42 @@ fun Coin.toCoinDetail(): CoinDetail {
         symbol = this.symbol ?: "",
         uuid = this.uuid ?: "",
         websiteUrl = this.websiteUrl ?: ""
+    )
+}
+
+
+fun CoinEntity.toCoin():com.pimsupa.coin.domain.model.Coin{
+    return com.pimsupa.coin.domain.model.Coin(
+        name = this.name ?: "",
+        iconUrl = this.iconUrl ?: "",
+        change = this.change ?: "",
+        price = this.price ?: "",
+        rank = this.rank ?: 0,
+        symbol = this.symbol ?: "",
+        uuid = this.uuid ?: "",
+    )
+}
+
+fun com.pimsupa.coin.data.remote.getcoins.Coin.toCoinEntity(): CoinEntity {
+    return CoinEntity(
+        name = this.name ?: "",
+        iconUrl = this.iconUrl ?: "",
+        change = this.change ?: "",
+        price = this.price ?: "",
+        rank = this.rank ?: 0,
+        symbol = this.symbol ?: "",
+        uuid = this.uuid ?: "",
+    )
+}
+
+fun com.pimsupa.coin.domain.model.Coin.toCoinEntity(): CoinEntity {
+    return CoinEntity(
+        name = this.name ?: "",
+        iconUrl = this.iconUrl ?: "",
+        change = this.change ?: "",
+        price = this.price ?: "",
+        rank = this.rank ?: 0,
+        symbol = this.symbol ?: "",
+        uuid = this.uuid ?: "",
     )
 }
