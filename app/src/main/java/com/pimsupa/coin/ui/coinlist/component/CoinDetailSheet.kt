@@ -57,7 +57,6 @@ fun CoinContent(coinDetail: CoinDetail) {
         Modifier
             .fillMaxWidth()
             .heightIn(max = 565.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Column(
             modifier = Modifier.padding(
@@ -79,10 +78,12 @@ fun CoinContent(coinDetail: CoinDetail) {
         Spacer(modifier = Modifier.weight(1f))
 
         HorizontalDivider()
-        TextButton(onClick = {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(coinDetail.websiteUrl))
-            context.startActivity(intent)
-        }) {
+        TextButton(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            onClick = {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(coinDetail.websiteUrl))
+                context.startActivity(intent)
+            }) {
             Text(
                 text = stringResource(id = R.string.button_go_to_website),
                 textAlign = TextAlign.Center,
@@ -99,6 +100,7 @@ fun CoinContent(coinDetail: CoinDetail) {
 fun CoinHeader(coinDetail: CoinDetail) {
     val textStyle = LocalCoinTextStyle.current
     val color = LocalCoinColor.current
+    val context = LocalContext.current
     Row {
         CoinImage(
             imageUrl = coinDetail.iconUrl,
@@ -115,7 +117,7 @@ fun CoinHeader(coinDetail: CoinDetail) {
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = coinDetail.symbolDetail(),
+                    text = coinDetail.symbolDetail().asString(context),
                     style = textStyle.title,
                     color = color.allBlack
                 )
@@ -129,7 +131,7 @@ fun CoinHeader(coinDetail: CoinDetail) {
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = coinDetail.getCoinDetailPrice(),
+                    text = coinDetail.getCoinDetailPrice().asString(context),
                     style = textStyle.detail1,
                     color = color.black
                 )
@@ -143,7 +145,7 @@ fun CoinHeader(coinDetail: CoinDetail) {
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = coinDetail.getCoinMarketCap(),
+                    text = coinDetail.getCoinMarketCap().asString(context),
                     style = textStyle.detail1,
                     color = color.black
                 )
@@ -204,8 +206,8 @@ fun CoinDetailNoDescriptionPreview() {
     CoinContent(
         coinDetail = CoinDetail(
             name = "test",
-            price = "1239204.320323",
-            marketCap = "2320323",
+            price = "",
+            marketCap = "",
             color = "#f7931A",
             description = ""
         )

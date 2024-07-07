@@ -1,6 +1,9 @@
 package com.pimsupa.coin.domain.model
 
 
+import androidx.compose.ui.res.stringResource
+import com.pimsupa.coin.R
+import com.pimsupa.coin.util.UiText
 import com.pimsupa.coin.util.formatDecimal
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -29,7 +32,13 @@ data class Coin(
     val uuid: String = "",
 ) {
 
-    fun getCoinListPrice(): String = "$${formatDecimal(price, 5)}"
+    fun getCoinListPrice(): UiText {
+        return if (price.isBlank()) {
+            UiText.StringResource(R.string.text_no_data)
+        } else {
+            UiText.DynamicString("$${formatDecimal(price, 5)}")
+        }
+    }
 
     fun isPositiveChange(): Pair<Boolean, String> {
         return try {

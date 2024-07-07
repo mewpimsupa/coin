@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -33,6 +34,7 @@ import com.pimsupa.coin.util.LocalCoinTextStyle
 fun CoinItem(coin: Coin, onClickCoinItem: () -> Unit = {}) {
     val style = LocalCoinTextStyle.current
     val color = LocalCoinColor.current
+    val context = LocalContext.current
 
     Card(
         onClick = onClickCoinItem,
@@ -70,7 +72,7 @@ fun CoinItem(coin: Coin, onClickCoinItem: () -> Unit = {}) {
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = coin.getCoinListPrice(),
+                        text = coin.getCoinListPrice().asString(context),
                         style = style.detailBold1,
                         color = color.black,
                         textAlign = TextAlign.End

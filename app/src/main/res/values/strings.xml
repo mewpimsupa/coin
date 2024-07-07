@@ -9,4 +9,5 @@
     <string name="text_no_description">No description</string>
     <string name="text_not_found_title">Sorry</string>
     <string name="text_not_found_sub_title">No result match this keyword</string>
+    <string name="text_no_data">no data</string>
 </resources>

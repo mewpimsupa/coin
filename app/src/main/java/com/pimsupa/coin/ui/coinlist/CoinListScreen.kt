@@ -169,16 +169,18 @@ fun CoinListScreenContent(
                         )
                     },
                     trailingIcon = {
-                        Image(
-                            modifier = Modifier
-                                .padding(4.dp)
-                                .size(16.dp)
-                                .clickable {
-                                    event.invoke(CoinListEvent.ClearSearchText)
-                                },
-                            painter = painterResource(id = R.drawable.ic_clear),
-                            contentDescription = "icon search"
-                        )
+                        if(state.searchText.value.text.isNotBlank()){
+                            Image(
+                                modifier = Modifier
+                                    .padding(4.dp)
+                                    .size(16.dp)
+                                    .clickable {
+                                        event.invoke(CoinListEvent.ClearSearchText)
+                                    },
+                                painter = painterResource(id = R.drawable.ic_clear),
+                                contentDescription = "icon search"
+                            )
+                        }
                     },
                     colors = TextFieldDefaults.textFieldColors(backgroundColor = color.lightGrey2)
                 )

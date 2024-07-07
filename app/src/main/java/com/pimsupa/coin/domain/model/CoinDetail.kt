@@ -1,9 +1,11 @@
 package com.pimsupa.coin.domain.model
 
+import com.pimsupa.coin.R
 import com.pimsupa.coin.data.coindetail.AllTimeHigh
 import com.pimsupa.coin.data.coindetail.Link
 import com.pimsupa.coin.data.coindetail.Notice
 import com.pimsupa.coin.data.coindetail.Supply
+import com.pimsupa.coin.util.UiText
 import com.pimsupa.coin.util.formatDecimal
 import com.squareup.moshi.Json
 import java.text.DecimalFormat
@@ -19,10 +21,31 @@ data class CoinDetail(
     val uuid: String = "",
     val websiteUrl: String = ""
 ) {
-    fun symbolDetail(): String = "(${symbol})"
-    fun getCoinDetailPrice(): String = "$ ${formatDecimal(price, 2)}"
-    fun getCoinMarketCap(): String = "$ ${formatLargeNumber(marketCap)}"
-    fun formatLargeNumber(numberStr: String): String {
+    fun symbolDetail(): UiText {
+        return if (symbol.isBlank()) {
+            UiText.StringResource(R.string.text_no_data)
+        } else {
+            UiText.DynamicString("(${symbol})")
+        }
+    }
+
+    fun getCoinDetailPrice(): UiText {
+        return if (price.isBlank()) {
+            UiText.StringResource(R.string.text_no_data)
+        } else {
+            UiText.DynamicString("$ ${formatDecimal(price, 2)}")
+        }
+    }
+
+    fun getCoinMarketCap(): UiText {
+        return if (marketCap.isBlank()) {
+            UiText.StringResource(R.string.text_no_data)
+        } else {
+            UiText.DynamicString("$ ${formatLargeNumber(marketCap)}")
+        }
+    }
+
+    private fun formatLargeNumber(numberStr: String): String {
         return try {
             val number = numberStr.toLong()
             val trillion = 1_000_000_000_000L

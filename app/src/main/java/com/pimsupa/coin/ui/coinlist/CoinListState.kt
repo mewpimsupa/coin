@@ -19,7 +19,7 @@ data class CoinListState(
     val searchText: MutableState<TextFieldValue> = mutableStateOf(TextFieldValue("")),
     var uiEvent: StateEvent<CoinListUiEvent> = consumed(),
 ) {
-    fun searchNotFound():Boolean =searchText.value.text.isNotBlank() && filteredCoins.isEmpty()
+    fun searchNotFound(): Boolean = searchText.value.text.isNotBlank() && filteredCoins.isEmpty()
     fun getTop3Coins(): List<Coin> {
         return listOf()
     }
