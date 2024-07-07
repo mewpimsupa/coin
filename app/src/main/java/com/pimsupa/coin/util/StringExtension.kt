@@ -1,6 +1,8 @@
 package com.pimsupa.coin.util
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -21,4 +23,13 @@ fun formatDecimal(value: String, scale: Int): String {
     } catch (e: NumberFormatException) {
         ""
     }
+}
+
+
+fun String.toTextFieldValue(): TextFieldValue {
+    return TextFieldValue(
+        text = this,
+        selection = TextRange(this.length),
+        composition = TextRange(0, this.length),
+    )
 }

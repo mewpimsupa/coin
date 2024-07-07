@@ -8,6 +8,7 @@ data class CoinColor(
     val allBlack: Color = AllBlack,
     val black: Color = Black,
     val lightGrey: Color = LightGrey,
+    val lightGrey2: Color = LightGrey2,
     val grey: Color = Grey,
     val green: Color = Green,
     val red: Color = Red,

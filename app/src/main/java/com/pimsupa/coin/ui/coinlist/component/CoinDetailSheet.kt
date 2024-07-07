@@ -69,7 +69,7 @@ fun CoinContent(coinDetail: CoinDetail) {
             CoinHeader(coinDetail)
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = coinDetail.description,
+                text = if (coinDetail.description.isBlank()) stringResource(id = R.string.text_no_description) else coinDetail.description,
                 style = textStyle.detail2,
                 color = color.grey
             )
@@ -185,6 +185,7 @@ fun CoinHeaderPreview() {
 @Composable
 @Preview(backgroundColor = 0xFFFFFF, showBackground = true)
 fun CoinHeaderLongPreview() {
+    //TODO fic the long header ui
     CoinHeader(
         coinDetail = CoinDetail(
             name = "reserfdfkdlsfkld;soekfld;soes;dlfkls;khjsdhf",
@@ -195,4 +196,20 @@ fun CoinHeaderLongPreview() {
         )
     )
 }
+
+
+@Composable
+@Preview(backgroundColor = 0xFFFFFF, showBackground = true)
+fun CoinDetailNoDescriptionPreview() {
+    CoinContent(
+        coinDetail = CoinDetail(
+            name = "test",
+            price = "1239204.320323",
+            marketCap = "2320323",
+            color = "#f7931A",
+            description = ""
+        )
+    )
+}
+
 

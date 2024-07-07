@@ -1,6 +1,8 @@
 package com.pimsupa.coin.ui.coinlist
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import com.pimsupa.coin.domain.model.Coin
 import com.pimsupa.coin.domain.usecase.GetCoinDetail
@@ -43,6 +45,8 @@ class CoinListViewModel @Inject constructor(
 
             is CoinListEvent.OnClickLoadCoinsAgain -> onClickLoadCoinsAgain()
             is CoinListEvent.RefreshCoins -> refreshCoin()
+
+            is CoinListEvent.OnSearch -> searchText(event.searchText)
         }
     }
 
@@ -124,7 +128,7 @@ class CoinListViewModel @Inject constructor(
     }
 
     private fun refreshCoin() {
-        //TODO bug on refresh coin second time on error screen
+        //TODO fix bug on refresh coin second time on error screen
         setState { copy(isRefresh = true) }
         loadCoins()
     }
@@ -150,6 +154,14 @@ class CoinListViewModel @Inject constructor(
         if (uiState.value.isLoading) return
         viewModelScope.launch {
             getCoins()
+        }
+    }
+
+    private fun searchText(text: TextFieldValue) {
+        viewModelScope.launch {
+            delay(500)
+            
+            setState { copy(searchText = mutableStateOf(text)) }
         }
     }
 
