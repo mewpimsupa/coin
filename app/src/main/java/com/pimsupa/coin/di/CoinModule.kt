@@ -1,5 +1,7 @@
 package com.pimsupa.coin.di
 
+import com.pimsupa.coin.data.repository.CoinRepositoryImpl
+import com.pimsupa.coin.domain.repository.CoinRepository
 import com.pimsupa.coin.domain.usecase.GetCoinDetail
 import com.pimsupa.coin.domain.usecase.GetCoinDetailImpl
 import com.pimsupa.coin.domain.usecase.GetCoins
@@ -36,6 +38,10 @@ abstract class CoinModule {
     abstract fun bindsSearchCoins(
         useCaseImpl: SearchCoinsImpl,
     ): SearchCoins
+    @Binds
+    abstract fun bindsCoinRepository(
+        useCaseImpl: CoinRepositoryImpl,
+    ): CoinRepository
 }
 
 

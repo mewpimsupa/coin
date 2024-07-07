@@ -97,4 +97,6 @@ dependencies {
 
     implementation(libs.androidx.material)
     implementation(libs.androidx.lifecycle.viewModelCompose)
+    
+    implementation(libs.androidx.work.ktx)
 }

@@ -3,6 +3,7 @@ package com.pimsupa.coin.domain.usecase
 import com.pimsupa.coin.data.CoinApi
 import com.pimsupa.coin.data.mapper.toCoin
 import com.pimsupa.coin.domain.model.Coin
+import com.pimsupa.coin.domain.repository.CoinRepository
 import com.pimsupa.coin.util.CoinDispatchers
 import com.pimsupa.coin.util.CoinException
 import com.pimsupa.coin.util.Dispatcher
@@ -18,22 +19,10 @@ interface GetCoins {
 }
 
 class GetCoinsImpl @Inject constructor(
-    private val api: CoinApi,
+    private val repository: CoinRepository,
     @Dispatcher(CoinDispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ) : GetCoins {
-    override fun invoke(page: Int): Flow<List<Coin>> = flow {
-        try {
-            val response = api.getCoins(limit = 20, offset = page * 20)
-            if (response.isSuccessful) {
-                val data =
-                    response.body()?.data ?: throw CoinException.CoinIsNullException()
-                emit(data.coins.map { it.toCoin() })
-            } else {
-                throw CoinException.GetCoinsErrorException()
-            }
-        } catch (e: Exception) {
-            throw e
-        }
-    }.flowOn(ioDispatcher)
+    override fun invoke(page: Int): Flow<List<Coin>> =
+        repository.getCoins(page).flowOn(ioDispatcher)
 
 }
