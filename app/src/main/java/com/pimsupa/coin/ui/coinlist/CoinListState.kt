@@ -21,7 +21,10 @@ data class CoinListState(
 ) {
     fun searchNotFound(): Boolean = searchText.value.text.isNotBlank() && filteredCoins.isEmpty()
 
-    fun getTop3Coins():List<Coin> {
+    fun getTop3Coins(): List<Coin> {
         return coins.take(3)
     }
 }
+
+
+data class CoinItemDisplay(val coin: Coin, val isInviteFriends: Boolean = false)
