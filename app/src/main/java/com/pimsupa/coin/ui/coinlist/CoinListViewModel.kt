@@ -67,7 +67,7 @@ class CoinListViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             getCoins()
-            updateCoin.invoke()
+            updateCoin.invoke().collect()
         }
     }
 

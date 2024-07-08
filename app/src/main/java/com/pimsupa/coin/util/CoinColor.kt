@@ -1,6 +1,5 @@
 package com.pimsupa.coin.util
 
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import com.pimsupa.coin.ui.theme.*
@@ -13,7 +12,7 @@ data class CoinColor(
     val textInviteColor: Color,
     val card: Color,
     val search: Color,
-    val iconTint: Color,
+    val containerSearch: Color,
     val positiveChange: Color,
     val negativeChange: Color,
     val textDetail: Color,
@@ -26,7 +25,7 @@ val LightCoinColors = CoinColor(
     textColor = Black,
     textInviteColor = AllBlack,
     card = LightGrey,
-    iconTint = LightGrey2,
+    containerSearch = LightGrey2,
     search = LightGrey3,
     textDetail = Grey,
     positiveChange = Green,
@@ -41,7 +40,7 @@ val DarkCoinColors = CoinColor(
     textColor = White,
     textInviteColor = AllBlack,
     card = DarkThemeLightGrey,
-    iconTint = DarkThemeLightGrey2,
+    containerSearch = DarkThemeLightGrey2,
     search = DarkThemeLightGrey3,
     textDetail = Grey,
     positiveChange = Green,

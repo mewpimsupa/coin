@@ -20,15 +20,15 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -43,6 +43,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -77,7 +78,9 @@ fun CoinListScreen(
     val uiState = viewModel.uiState.collectAsState().value
     val onEvent = viewModel::onEvent
 
-    val bottomSheetState = rememberModalBottomSheetState()
+    val bottomSheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
     val openBottomSheet = remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -169,10 +172,11 @@ fun CoinListScreenContent(
                 .pullRefresh(pullRefreshState)
         ) {
             Column {
-                TextField(
+                androidx.compose.material3.OutlinedTextField(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
+                    shape = RoundedCornerShape(8.dp),
                     value = state.searchText.value,
                     onValueChange = { text -> event.invoke(CoinListEvent.OnSearch(text)) },
                     leadingIcon = {
@@ -197,7 +201,12 @@ fun CoinListScreenContent(
                             )
                         }
                     },
-                    colors = TextFieldDefaults.textFieldColors(backgroundColor = color.iconTint)
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = color.containerSearch,
+                        unfocusedContainerColor = color.containerSearch,
+                        focusedBorderColor = Color.Transparent,
+                        unfocusedBorderColor = Color.Transparent
+                    )
                 )
                 HorizontalDivider()
 

@@ -22,7 +22,7 @@ class UpdateCoinImpl @Inject constructor(
 ) : UpdateCoin {
     override fun invoke(): Flow<List<Coin>> = callbackFlow {
         try {
-            val requestWorker = UpdateCoinWorker.createWorkRequest( 30)
+            val requestWorker = UpdateCoinWorker.createWorkRequest( 60)
             workManager.enqueueUniqueWork(
                 "UpdateCoinWork",
                 ExistingWorkPolicy.REPLACE,
