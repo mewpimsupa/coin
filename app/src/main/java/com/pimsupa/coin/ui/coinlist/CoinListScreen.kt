@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,8 +31,10 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -116,6 +119,7 @@ fun CoinListScreenContent(
     val color = LocalCoinColor.current
     val listState = rememberLazyListState()
     val coins by rememberUpdatedState(newValue = state.filteredCoins)
+    val focusManager = LocalFocusManager.current
 
     val pullRefreshState = rememberPullRefreshState(
         refreshing = state.isRefresh,
@@ -147,6 +151,11 @@ fun CoinListScreenContent(
                 .background(color = color.background)
                 .padding(padding)
                 .pullRefresh(pullRefreshState)
+                .pointerInput(Unit) {
+                    detectTapGestures(onTap = {
+                        focusManager.clearFocus()
+                    })
+                }
         ) {
 
             when (getOrientation()) {
@@ -175,7 +184,8 @@ fun CoinListScreenContent(
             PullRefreshIndicator(
                 refreshing = state.isRefresh,
                 state = pullRefreshState,
-                modifier = Modifier.align(Alignment.TopCenter)
+                modifier = Modifier.align(Alignment.TopCenter),
+                contentColor = color.blue
             )
         }
     }

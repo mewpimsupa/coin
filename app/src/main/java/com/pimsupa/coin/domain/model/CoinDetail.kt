@@ -23,7 +23,7 @@ data class CoinDetail(
 ) {
     fun symbolDetail(): UiText {
         return if (symbol.isBlank()) {
-            UiText.StringResource(R.string.text_no_data)
+            UiText.StringResource(R.string.text_no_description)
         } else {
             UiText.DynamicString("(${symbol})")
         }
@@ -31,7 +31,7 @@ data class CoinDetail(
 
     fun getCoinDetailPrice(): UiText {
         return if (price.isBlank()) {
-            UiText.StringResource(R.string.text_no_data)
+            UiText.StringResource(R.string.text_no_description)
         } else {
             UiText.DynamicString("$ ${formatDecimal(price, 2)}")
         }
@@ -39,7 +39,7 @@ data class CoinDetail(
 
     fun getCoinMarketCap(): UiText {
         return if (marketCap.isBlank()) {
-            UiText.StringResource(R.string.text_no_data)
+            UiText.StringResource(R.string.text_no_description)
         } else {
             UiText.DynamicString("$ ${formatLargeNumber(marketCap)}")
         }

@@ -149,9 +149,9 @@ class CoinListViewModel @Inject constructor(
     }
 
     private fun refreshCoin() {
-        //TODO fix bug on refresh coin second time on error screen
         setState { copy(coins = listOf(), isRefresh = true) }
         currentPage = 0
+        clearSearchText()
         loadCoins()
     }
 
@@ -181,17 +181,12 @@ class CoinListViewModel @Inject constructor(
 
     private fun searchText(text: TextFieldValue) {
         viewModelScope.launch {
+            searchJob?.cancel()
             if (text.text.isEmpty()) {
-                val filteredCoins = uiState.value.coins.filterOutTop3().calculateInviteFriendsList()
-                setState {
-                    copy(
-                        filteredCoins = filteredCoins
-                    )
-                }
+                clearSearchText()
                 return@launch
             }
             setState { copy(searchText = mutableStateOf(text)) }
-            searchJob?.cancel()
             searchJob = viewModelScope.launch {
                 searchCoins.invoke(text.text)
                     .onStart {

@@ -3,6 +3,7 @@ package com.pimsupa.coin.domain.worker
 import android.content.Context
 import android.util.Log
 import androidx.hilt.work.HiltWorker
+import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.NetworkType
@@ -51,8 +52,6 @@ class UpdateCoinWorker @AssistedInject constructor(
     }
 
     companion object {
-        const val LIMIT = "limit"
-        const val COIN_DATA = "coin_data"
         val SyncConstraints
             get() = Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
@@ -61,6 +60,10 @@ class UpdateCoinWorker @AssistedInject constructor(
         fun createWorkRequest(delay:Int): OneTimeWorkRequest {
             return OneTimeWorkRequestBuilder<UpdateCoinWorker>()
                 .setConstraints(SyncConstraints)
+                .setBackoffCriteria(
+                    BackoffPolicy.EXPONENTIAL,
+                    10, TimeUnit.SECONDS // Adjust as needed
+                )
                 .setInitialDelay(delay.toLong(), TimeUnit.SECONDS)
                 .build()
         }

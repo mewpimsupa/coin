@@ -80,19 +80,21 @@ fun CoinContent(coinDetail: CoinDetail) {
         }
         Spacer(modifier = Modifier.weight(1f))
 
-        HorizontalDivider()
-        TextButton(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            onClick = {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(coinDetail.websiteUrl))
-                context.startActivity(intent)
-            }) {
-            Text(
-                text = stringResource(id = R.string.button_go_to_website),
-                textAlign = TextAlign.Center,
-                style = textStyle.detailBold2,
-                color = color.blue
-            )
+        if (coinDetail.websiteUrl.isNotBlank()) {
+            HorizontalDivider()
+            TextButton(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                onClick = {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(coinDetail.websiteUrl))
+                    context.startActivity(intent)
+                }) {
+                Text(
+                    text = stringResource(id = R.string.button_go_to_website),
+                    textAlign = TextAlign.Center,
+                    style = textStyle.detailBold2,
+                    color = color.blue
+                )
+            }
         }
 
 

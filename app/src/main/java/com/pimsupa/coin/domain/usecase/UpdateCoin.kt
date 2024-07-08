@@ -22,7 +22,7 @@ class UpdateCoinImpl @Inject constructor(
 ) : UpdateCoin {
     override fun invoke(): Flow<List<Coin>> = callbackFlow {
         try {
-            val requestWorker = UpdateCoinWorker.createWorkRequest( 60)
+            val requestWorker = UpdateCoinWorker.createWorkRequest(10)
             workManager.enqueueUniqueWork(
                 "UpdateCoinWork",
                 ExistingWorkPolicy.REPLACE,
@@ -30,14 +30,7 @@ class UpdateCoinImpl @Inject constructor(
             )
             workManager.getWorkInfoByIdLiveData(requestWorker.id).observeForever { workInfo ->
                 when (workInfo.state) {
-                    WorkInfo.State.SUCCEEDED -> {
-                        val coinsArray =
-                            workInfo.outputData.getStringArray(UpdateCoinWorker.COIN_DATA)
-                        if (coinsArray != null) {
-                            val coins = coinsArray.map { Coin(it) }
-                            trySend(coins)
-                        }
-
+                    WorkInfo.State.SUCCEEDED, WorkInfo.State.FAILED -> {
                         workManager.enqueueUniqueWork(
                             "UpdateCoinWork",
                             ExistingWorkPolicy.REPLACE,
@@ -45,11 +38,9 @@ class UpdateCoinImpl @Inject constructor(
                         )
                     }
 
-                    WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> {
-                        trySend(emptyList())
+                    else -> {
+                        //
                     }
-
-                    else -> {}
                 }
             }
 
@@ -58,7 +49,7 @@ class UpdateCoinImpl @Inject constructor(
             }
 
         } catch (e: Exception) {
-            Log.e("error",e.toString())
+            Log.e("error", e.toString())
         }
     }
 
