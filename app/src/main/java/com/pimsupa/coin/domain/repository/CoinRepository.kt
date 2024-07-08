@@ -12,4 +12,5 @@ interface CoinRepository {
     fun searchCoin(keyword: String): Flow<List<Coin>>
     fun updateCoins(limit: Int): Flow<List<Coin>>
     suspend fun updateLocalCoins(list:List<Coin>)
+    fun getAllLocalCoin(): Flow<List<Coin>>
 }

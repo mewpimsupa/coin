@@ -104,4 +104,8 @@ class CoinRepositoryImpl @Inject constructor(
         db.coinDao().insertCoins(list.map { it.toCoinEntity() })
     }
 
+    override fun getAllLocalCoin(): Flow<List<Coin>> {
+        return db.coinDao().getCoinList().map { it.map { it.toCoin() } }
+    }
+
 }

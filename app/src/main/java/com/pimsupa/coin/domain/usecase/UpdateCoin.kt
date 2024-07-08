@@ -14,13 +14,13 @@ import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 
 interface UpdateCoin {
-    operator fun invoke(): Flow<List<Coin>>
+    operator fun invoke(onSuccess:()->Unit): Flow<List<Coin>>
 }
 
 class UpdateCoinImpl @Inject constructor(
     private val workManager: WorkManager,
 ) : UpdateCoin {
-    override fun invoke(): Flow<List<Coin>> = callbackFlow {
+    override fun invoke(onSuccess:()->Unit): Flow<List<Coin>> = callbackFlow {
         try {
             val requestWorker = UpdateCoinWorker.createWorkRequest(10)
             workManager.enqueueUniqueWork(
@@ -36,6 +36,8 @@ class UpdateCoinImpl @Inject constructor(
                             ExistingWorkPolicy.REPLACE,
                             requestWorker
                         )
+
+                        onSuccess.invoke()
                     }
 
                     else -> {

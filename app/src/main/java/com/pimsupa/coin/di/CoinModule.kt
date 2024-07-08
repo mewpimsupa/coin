@@ -12,6 +12,8 @@ import com.pimsupa.coin.domain.usecase.GetCoinDetail
 import com.pimsupa.coin.domain.usecase.GetCoinDetailImpl
 import com.pimsupa.coin.domain.usecase.GetCoins
 import com.pimsupa.coin.domain.usecase.GetCoinsImpl
+import com.pimsupa.coin.domain.usecase.GetCoinsLocal
+import com.pimsupa.coin.domain.usecase.GetCoinsLocalImpl
 import com.pimsupa.coin.domain.usecase.SearchCoins
 import com.pimsupa.coin.domain.usecase.SearchCoinsImpl
 import com.pimsupa.coin.domain.usecase.UpdateCoin
@@ -37,6 +39,10 @@ abstract class CoinModule {
     abstract fun bindsGetCoins(
         useCaseImpl: GetCoinsImpl,
     ): GetCoins
+    @Binds
+    abstract fun bindsGetLocalCoins(
+        useCaseImpl: GetCoinsLocalImpl,
+    ): GetCoinsLocal
 
     @Binds
     abstract fun bindsGetCoinDetail(

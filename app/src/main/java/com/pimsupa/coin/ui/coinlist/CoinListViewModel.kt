@@ -4,11 +4,16 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
+import androidx.work.ExistingWorkPolicy
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import com.pimsupa.coin.domain.model.Coin
 import com.pimsupa.coin.domain.usecase.GetCoinDetail
 import com.pimsupa.coin.domain.usecase.GetCoins
+import com.pimsupa.coin.domain.usecase.GetCoinsLocal
 import com.pimsupa.coin.domain.usecase.SearchCoins
 import com.pimsupa.coin.domain.usecase.UpdateCoin
+import com.pimsupa.coin.domain.worker.UpdateCoinWorker
 import com.pimsupa.coin.util.BaseViewModel
 import com.pimsupa.coin.util.CoinDispatchers
 import com.pimsupa.coin.util.CoinException
@@ -23,6 +28,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
@@ -33,9 +39,11 @@ import javax.inject.Inject
 @HiltViewModel
 class CoinListViewModel @Inject constructor(
     private val getCoins: GetCoins,
+    private val getCoinsLocal: GetCoinsLocal,
     private val getCoinDetail: GetCoinDetail,
     private val searchCoins: SearchCoins,
     private val updateCoin: UpdateCoin,
+    private val workManager: WorkManager,
     @Dispatcher(CoinDispatchers.Default) private val defaultDispatcher: CoroutineDispatcher
 ) :
     BaseViewModel<CoinListState>(CoinListState()) {
@@ -67,7 +75,15 @@ class CoinListViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             getCoins()
-            updateCoin.invoke().collect()
+            updateCoin {
+                viewModelScope.launch {
+                    val coins = getCoinsLocal.invoke().first()
+                    val filterCoins =
+                        coins.filterOutTop3().calculateInviteFriendsList()
+                    setState { copy(coins = coins, filteredCoins = filterCoins) }
+                }
+            }.collect()
+
         }
     }
 
