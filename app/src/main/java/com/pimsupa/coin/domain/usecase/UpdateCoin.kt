@@ -49,7 +49,7 @@ class UpdateCoinImpl @Inject constructor(
             }
 
         } catch (e: Exception) {
-            Log.e("error", e.toString())
+            Log.e("UpdateCoinError", e.toString())
         }
     }
 

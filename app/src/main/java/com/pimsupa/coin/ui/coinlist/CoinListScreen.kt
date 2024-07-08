@@ -137,7 +137,6 @@ fun CoinListScreenContent(
                 val lastVisibleItemIndex = visibleItems.lastOrNull()?.index ?: 0
                 val totalItems = coins.size
                 if (lastVisibleItemIndex >= totalItems - 1 && !state.isLoading && !state.isError) {
-                    Log.d("test", "screen load more coins")
                     event(CoinListEvent.LoadMoreCoins)
                 }
             }

@@ -144,7 +144,7 @@ class CoinListViewModel @Inject constructor(
 
     private fun loadMoreCoins() {
         if (uiState.value.searchText.value.text.isNotBlank()) return
-        Log.d("test", "load more coins")
+        Log.d("fetchCoins", "load more coins")
         loadCoins()
     }
 
