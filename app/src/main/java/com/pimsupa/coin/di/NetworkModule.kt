@@ -2,7 +2,6 @@ package com.pimsupa.coin.di
 
 import com.pimsupa.coin.data.remote.AuthAuthenticator
 import com.pimsupa.coin.data.remote.CoinApi
-import com.pimsupa.coin.data.remote.RateLimitInterceptor
 import com.pimsupa.coin.util.Configs
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -24,24 +23,15 @@ object NetworkModule {
     @Singleton
     fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor = HttpLoggingInterceptor()
         .setLevel(HttpLoggingInterceptor.Level.BODY)
-    @Provides
-    @Singleton
-    fun provideRateLimitInterceptor(): RateLimitInterceptor {
-        val maxRequests = 10 // Maximum requests
-        val timeWindowMillis = TimeUnit.MINUTES.toMillis(1) // Time window
-        return RateLimitInterceptor(maxRequests, timeWindowMillis)
-    }
 
     @Provides
     @Singleton
     fun provideOkHttpClientBuilder(
         httpLoggingInterceptor: HttpLoggingInterceptor,
         authAuthenticator: AuthAuthenticator,
-        rateLimitInterceptor: RateLimitInterceptor
     ): OkHttpClient.Builder =
         OkHttpClient.Builder()
             .addInterceptor(httpLoggingInterceptor)
-            .addInterceptor(rateLimitInterceptor)
             .authenticator(authAuthenticator)
 
 
