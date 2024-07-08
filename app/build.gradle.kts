@@ -88,7 +88,6 @@ dependencies {
     implementation(libs.moshi)
     implementation(libs.moshi.kotlin)
 
-//    implementation(libs.okhttp.okhttp3)
     implementation(libs.okhttp.logging)
     implementation(libs.coil.kt.compose)
     implementation("io.coil-kt:coil-svg:2.6.0")
