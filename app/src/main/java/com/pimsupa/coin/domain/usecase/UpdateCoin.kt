@@ -30,7 +30,7 @@ class UpdateCoinImpl @Inject constructor(
             )
             workManager.getWorkInfoByIdLiveData(requestWorker.id).observeForever { workInfo ->
                 when (workInfo.state) {
-                    WorkInfo.State.SUCCEEDED, WorkInfo.State.FAILED -> {
+                    WorkInfo.State.SUCCEEDED -> {
                         workManager.enqueueUniqueWork(
                             "UpdateCoinWork",
                             ExistingWorkPolicy.REPLACE,
@@ -39,7 +39,7 @@ class UpdateCoinImpl @Inject constructor(
                     }
 
                     else -> {
-                        //
+                        //fail or canceled then do nothing
                     }
                 }
             }
