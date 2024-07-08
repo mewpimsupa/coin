@@ -3,34 +3,21 @@ package com.pimsupa.coin.ui.coinlist
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -43,26 +30,17 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.pimsupa.coin.R
 import com.pimsupa.coin.domain.model.Coin
 import com.pimsupa.coin.ui.coinlist.component.CoinDetail
-import com.pimsupa.coin.ui.coinlist.component.CoinItem
-import com.pimsupa.coin.ui.coinlist.component.CoinListError
-import com.pimsupa.coin.ui.coinlist.component.CoinListSearchNotFound
-import com.pimsupa.coin.ui.coinlist.component.InviteFriends
-import com.pimsupa.coin.ui.coinlist.component.Top3Coin
-import com.pimsupa.coin.ui.coinlist.component.Top3Text
+import com.pimsupa.coin.ui.coinlist.component.LandScapeUI
+import com.pimsupa.coin.ui.coinlist.component.PortraitUI
 import com.pimsupa.coin.util.LaunchedEventEffect
 import com.pimsupa.coin.util.LocalCoinColor
-import com.pimsupa.coin.util.LocalCoinTextStyle
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
@@ -135,7 +113,6 @@ fun CoinListScreenContent(
     state: CoinListState,
     event: (CoinListEvent) -> Unit
 ) {
-    val textStyle = LocalCoinTextStyle.current
     val color = LocalCoinColor.current
     val listState = rememberLazyListState()
     val coins by rememberUpdatedState(newValue = state.filteredCoins)
@@ -171,121 +148,29 @@ fun CoinListScreenContent(
                 .padding(padding)
                 .pullRefresh(pullRefreshState)
         ) {
-            Column {
-                androidx.compose.material3.OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    shape = RoundedCornerShape(8.dp),
-                    value = state.searchText.value,
-                    onValueChange = { text -> event.invoke(CoinListEvent.OnSearch(text)) },
-                    leadingIcon = {
-                        Image(
-                            modifier = Modifier.size(24.dp),
-                            painter = painterResource(id = R.drawable.ic_search),
-                            contentDescription = "icon search",
-                            colorFilter = ColorFilter.tint(color = color.search)
-                        )
-                    },
-                    trailingIcon = {
-                        if (state.searchText.value.text.isNotBlank()) {
-                            Image(
-                                modifier = Modifier
-                                    .padding(4.dp)
-                                    .size(16.dp)
-                                    .clickable {
-                                        event.invoke(CoinListEvent.ClearSearchText)
-                                    },
-                                painter = painterResource(id = R.drawable.ic_clear),
-                                contentDescription = "icon search"
-                            )
-                        }
-                    },
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = color.containerSearch,
-                        unfocusedContainerColor = color.containerSearch,
-                        focusedBorderColor = Color.Transparent,
-                        unfocusedBorderColor = Color.Transparent
+
+            when (getOrientation()) {
+                Orientation.Portrait -> {
+                    PortraitUI(
+                        state = state,
+                        event = event,
+                        pullRefreshState = pullRefreshState,
+                        listState = listState,
+                        coins = coins
                     )
-                )
-                HorizontalDivider()
-
-                if (state.searchNotFound()) {
-                    CoinListSearchNotFound()
-                }
-                LazyColumn(
-                    modifier = Modifier.pullRefresh(pullRefreshState),
-                    state = listState,
-                ) {
-                    item {
-                        if (coins.isNotEmpty() && state.searchText.value.text.isEmpty()) {
-                            Top3Text(
-                                modifier = Modifier.padding(
-                                    top = 16.dp,
-                                    start = 16.dp,
-                                    end = 16.dp
-                                )
-                            )
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 12.dp, start = 15.dp, end = 15.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                            ) {
-                                state.getTop3Coins().forEach {
-                                    Box(
-                                        modifier = Modifier
-                                            .weight(1f)
-                                            .padding(horizontal = 4.dp)
-                                            .wrapContentHeight()
-                                    ) {
-                                        Top3Coin(coin = it) { coin ->
-                                            event.invoke(CoinListEvent.OnClickCoin(coin))
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                    }
-                    item {
-                        Text(
-                            modifier = Modifier.padding(vertical = 20.dp, horizontal = 16.dp),
-                            text = stringResource(id = R.string.title_buy_sell_hold_crypto),
-                            style = textStyle.titleBold,
-                            color = color.textColor
-                        )
-                    }
-                    items(coins) { filterCoin ->
-                        when (filterCoin) {
-                            is ItemDisplay.InviteFriends -> {
-                                InviteFriends {
-                                    event.invoke(CoinListEvent.OnClickInviteFriends)
-                                }
-                            }
-
-                            is ItemDisplay.CoinItem -> {
-                                CoinItem(filterCoin.coin) {
-                                    event.invoke(CoinListEvent.OnClickCoin(filterCoin.coin))
-                                }
-                            }
-                        }
-                    }
-                    item {
-                        if (state.isLoading && !state.isRefresh) {
-                            Spacer(modifier = Modifier.height(12.dp))
-                            Loading()
-                        }
-                        if (state.isError) {
-                            CoinListError {
-                                event.invoke(CoinListEvent.OnClickLoadCoinsAgain)
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(64.dp))
-                    }
                 }
 
+                Orientation.Landscape -> {
+                    LandScapeUI(
+                        state = state,
+                        event = event,
+                        pullRefreshState = pullRefreshState,
+                        listState = listState,
+                        coins = coins
+                    )
+                }
             }
+
 
             PullRefreshIndicator(
                 refreshing = state.isRefresh,
@@ -294,7 +179,20 @@ fun CoinListScreenContent(
             )
         }
     }
+}
 
+enum class Orientation {
+    Portrait, Landscape
+}
+
+@Composable
+fun getOrientation(): Orientation {
+    val configuration = LocalConfiguration.current
+    return if (configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE) {
+        Orientation.Landscape
+    } else {
+        Orientation.Portrait
+    }
 }
 
 @Composable

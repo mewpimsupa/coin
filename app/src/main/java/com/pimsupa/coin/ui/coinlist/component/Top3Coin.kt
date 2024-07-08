@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
@@ -65,8 +66,8 @@ fun Top3Coin(coin: Coin, onClickCoinItem: (Coin) -> Unit = {}) {
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = coin.name,
-                style = style.titleBold,
-                color = color.textColor,
+                style = style.title,
+                color = color.textDetail,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

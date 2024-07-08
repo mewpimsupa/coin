@@ -23,6 +23,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pimsupa.coin.R
+import com.pimsupa.coin.ui.coinlist.Orientation
+import com.pimsupa.coin.ui.coinlist.getOrientation
 import com.pimsupa.coin.util.LocalCoinColor
 
 
@@ -60,12 +62,19 @@ fun InviteFriends(modifier: Modifier = Modifier, onClickInviteFriends: () -> Uni
 fun InviteText() {
     val color = LocalCoinColor.current
     val textStyle = LocalTextStyle.current
+    val orientation = getOrientation()
+    val textSize = if (orientation == Orientation.Portrait) {
+        16.sp
+    } else {
+        12.sp
+    }
+
     val annotatedString = buildAnnotatedString {
         withStyle(
             style = SpanStyle(
                 color = color.textInviteColor,
                 fontWeight = FontWeight.W400,
-                fontSize = 16.sp
+                fontSize = textSize
             )
         ) {
             append(stringResource(id = R.string.text_earn_free))
@@ -75,7 +84,7 @@ fun InviteText() {
             style = SpanStyle(
                 color = color.blue,
                 fontWeight = FontWeight.Bold,
-                fontSize = 16.sp
+                fontSize = textSize
             )
         ) {
             append(" " + stringResource(id = R.string.text_invite_friend))

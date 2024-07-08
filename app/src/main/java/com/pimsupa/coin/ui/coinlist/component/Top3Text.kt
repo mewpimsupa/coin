@@ -7,6 +7,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
@@ -15,7 +16,7 @@ import com.pimsupa.coin.util.LocalCoinColor
 
 
 @Composable
-fun Top3Text(modifier: Modifier = Modifier) {
+fun Top3Text(modifier: Modifier = Modifier, textAlign: TextAlign= TextAlign.Start) {
     val color = LocalCoinColor.current
 
     val annotatedString = buildAnnotatedString {
@@ -50,7 +51,7 @@ fun Top3Text(modifier: Modifier = Modifier) {
         }
     }
 
-    Text(modifier = modifier, text = annotatedString)
+    Text(modifier = modifier, text = annotatedString, textAlign = textAlign)
 
 }
 
@@ -58,5 +59,5 @@ fun Top3Text(modifier: Modifier = Modifier) {
 @Composable
 @Preview(backgroundColor = 0xFFFFFF, showBackground = true)
 fun Top3TextPreview() {
-    Top3Text()
+    Top3Text(modifier = Modifier)
 }
