@@ -18,6 +18,7 @@ import com.pimsupa.coin.util.Dispatcher
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
@@ -32,13 +33,18 @@ class UpdateCoinWorker @AssistedInject constructor(
         withContext(ioDispatcher) {
             Log.d("UpdateCoinWorker", "SyncWorker started")
             val count = coinRepository.getCoinCount()
-            if(count == 0) return@withContext Result.success()
+            if (count == 0) return@withContext Result.success()
 
             val updateCoinFlow = coinRepository.updateCoins(coinRepository.getCoinCount())
             val coinList = mutableListOf<Coin>()
-            updateCoinFlow.collect { coins ->
-                coinList.addAll(coins)
-            }
+            updateCoinFlow
+                .catch { e ->
+                    Log.e("UpdateCoinWorker", "update coin failed", e)
+                    Result.failure()
+                }
+                .collect { coins ->
+                    coinList.addAll(coins)
+                }
             coinRepository.updateLocalCoins(coinList)
             if (coinList.isNotEmpty()) {
                 Result.success()
@@ -57,7 +63,7 @@ class UpdateCoinWorker @AssistedInject constructor(
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
 
-        fun createWorkRequest(delay:Int): OneTimeWorkRequest {
+        fun createWorkRequest(delay: Int): OneTimeWorkRequest {
             return OneTimeWorkRequestBuilder<UpdateCoinWorker>()
                 .setConstraints(SyncConstraints)
                 .setBackoffCriteria(

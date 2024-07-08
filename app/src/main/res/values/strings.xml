@@ -15,4 +15,5 @@
     <string name="text_rank_crypto">rank crypto</string>
     <string name="text_earn_free">You can earn $10  when you invite a friend to buy crypto.</string>
     <string name="text_invite_friend">Invite your friend</string>
+    <string name="placeholder_search">Search</string>
 </resources>

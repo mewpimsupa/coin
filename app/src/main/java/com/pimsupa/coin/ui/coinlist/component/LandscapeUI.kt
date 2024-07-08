@@ -7,19 +7,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshState
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -28,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import com.pimsupa.coin.R
 import com.pimsupa.coin.ui.coinlist.CoinListEvent
 import com.pimsupa.coin.ui.coinlist.CoinListState
-import com.pimsupa.coin.ui.coinlist.CoinListUiEvent
 import com.pimsupa.coin.ui.coinlist.ItemDisplay
 import com.pimsupa.coin.ui.coinlist.Loading
 import com.pimsupa.coin.util.LocalCoinColor
@@ -129,7 +122,7 @@ fun LandScapeUI(
             item {
                 if (state.isLoading && !state.isRefresh) {
                     Spacer(modifier = Modifier.height(12.dp))
-                    Loading()
+                    Loading(modifier = Modifier.fillMaxWidth())
                 }
                 if (state.isError) {
                     CoinListError {

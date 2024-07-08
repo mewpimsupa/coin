@@ -3,6 +3,7 @@ package com.pimsupa.coin.ui.coinlist.component
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pimsupa.coin.R
@@ -114,12 +116,17 @@ fun CoinHeader(coinDetail: CoinDetail) {
         )
         Spacer(modifier = Modifier.width(16.dp))
         Column {
-            Row(verticalAlignment = Alignment.Top) {
-                Text(
-                    text = coinDetail.name,
-                    style = textStyle.header2,
-                    color = coinDetail.color.parseColor() ?: color.textColor
-                )
+            Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
+                Box(
+                    modifier = Modifier.weight(1f, fill = false)
+                ) {
+                    Text(
+                        modifier = Modifier,
+                        text = coinDetail.name,
+                        style = textStyle.header2,
+                        color = coinDetail.color.parseColor() ?: color.textColor
+                    )
+                }
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     text = coinDetail.symbolDetail().asString(context),

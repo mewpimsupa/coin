@@ -87,7 +87,7 @@ fun PortraitUI(
             item {
                 if (state.isLoading && !state.isRefresh) {
                     Spacer(modifier = Modifier.height(12.dp))
-                    Loading()
+                    Loading(modifier = Modifier.fillMaxWidth())
                 }
                 if (state.isError) {
                     CoinListError {

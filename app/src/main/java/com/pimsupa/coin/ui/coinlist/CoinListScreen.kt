@@ -185,7 +185,8 @@ fun CoinListScreenContent(
                 refreshing = state.isRefresh,
                 state = pullRefreshState,
                 modifier = Modifier.align(Alignment.TopCenter),
-                contentColor = color.blue
+                contentColor = color.blue,
+                backgroundColor = color.background
             )
         }
     }
@@ -210,7 +211,6 @@ fun Loading(modifier: Modifier = Modifier) {
     val color = LocalCoinColor.current
     Column(
         modifier = modifier
-            .fillMaxWidth()
             .padding(vertical = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -253,5 +253,33 @@ fun CoinListScreenErrorPreview() {
         ), event = {}
     )
 }
+
+
+@Composable
+@Preview(backgroundColor = 0xFFFFFF, showBackground = true)
+fun CoinListScreenLoadingPreview() {
+    CoinListScreenContent(
+        state = CoinListState(
+            isLoading = true,
+            coins = listOf(
+                Coin(name = "test coin1", change = "-3.22"),
+                Coin(name = "test coin2", change = "3.22"),
+                Coin(name = "test coin2", change = "3.22"),
+                Coin(name = "test coin2", change = "3.22")
+            )
+        ), event = {}
+    )
+}
+
+@Composable
+@Preview(backgroundColor = 0xFFFFFF, showBackground = true)
+fun CoinListScreenFullScreenLoadingPreview() {
+    CoinListScreenContent(
+        state = CoinListState(
+            isFullScreenLoading = true,
+        ), event = {}
+    )
+}
+
 
 
