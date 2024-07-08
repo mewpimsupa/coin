@@ -31,7 +31,7 @@ fun CoinListError(onClickTryAgain: () -> Unit = {}) {
         Text(
             text = stringResource(id = R.string.text_could_not_load_data),
             style = textStyle.title,
-            color = color.black
+            color = color.textColor
         )
         TextButton(onClick = onClickTryAgain) {
             Text(

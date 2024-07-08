@@ -21,7 +21,7 @@ fun Top3Text(modifier: Modifier = Modifier) {
     val annotatedString = buildAnnotatedString {
         withStyle(
             style = SpanStyle(
-                color = color.black,
+                color = color.textColor,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp
             )
@@ -31,7 +31,7 @@ fun Top3Text(modifier: Modifier = Modifier) {
 
         withStyle(
             style = SpanStyle(
-                color = color.red,
+                color = color.highlight,
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp
             )
@@ -41,7 +41,7 @@ fun Top3Text(modifier: Modifier = Modifier) {
 
         withStyle(
             style = SpanStyle(
-                color = color.black,
+                color = color.textColor,
                 fontWeight = FontWeight.W500,
                 fontSize = 16.sp
             )

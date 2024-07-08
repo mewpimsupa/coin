@@ -27,7 +27,7 @@ fun ChangeText(data: Pair<Boolean, String>) {
             Text(
                 text = stringResource(id = R.string.text_no_data),
                 style = style.detailBold1,
-                color = color.black,
+                color = color.textColor,
                 textAlign = TextAlign.End
             )
         }else{
@@ -42,7 +42,7 @@ fun ChangeText(data: Pair<Boolean, String>) {
             Text(
                 text = change,
                 style = style.detailBold1,
-                color = if (isPositive) color.green else color.red,
+                color = if (isPositive) color.positiveChange else color.negativeChange,
                 textAlign = TextAlign.End
             )
         }

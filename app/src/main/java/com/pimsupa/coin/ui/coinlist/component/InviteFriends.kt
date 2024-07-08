@@ -37,7 +37,7 @@ fun InviteFriends(modifier: Modifier = Modifier, onClickInviteFriends: () -> Uni
             .fillMaxWidth()
             .padding(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(containerColor = color.lightBlue)
+        colors = CardDefaults.cardColors(containerColor = color.inviteCard)
     ) {
         Row(
             modifier = Modifier
@@ -63,7 +63,7 @@ fun InviteText() {
     val annotatedString = buildAnnotatedString {
         withStyle(
             style = SpanStyle(
-                color = color.allBlack,
+                color = color.textInviteColor,
                 fontWeight = FontWeight.W400,
                 fontSize = 16.sp
             )

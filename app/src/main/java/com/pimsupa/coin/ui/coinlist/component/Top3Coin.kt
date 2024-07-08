@@ -31,19 +31,21 @@ import com.pimsupa.coin.util.LocalCoinTextStyle
 
 
 @Composable
-fun Top3Coin(coin: Coin, onClickCoinItem: () -> Unit = {}) {
+fun Top3Coin(coin: Coin, onClickCoinItem: (Coin) -> Unit = {}) {
     val style = LocalCoinTextStyle.current
     val color = LocalCoinColor.current
     val context = LocalContext.current
 
     Card(
-        onClick = onClickCoinItem,
+        onClick = { onClickCoinItem.invoke(coin) },
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(containerColor = color.lightGrey)
+        colors = CardDefaults.cardColors(containerColor = color.card)
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -56,7 +58,7 @@ fun Top3Coin(coin: Coin, onClickCoinItem: () -> Unit = {}) {
             Text(
                 text = coin.symbol,
                 style = style.titleBold,
-                color = color.black,
+                color = color.textColor,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -64,7 +66,7 @@ fun Top3Coin(coin: Coin, onClickCoinItem: () -> Unit = {}) {
             Text(
                 text = coin.name,
                 style = style.titleBold,
-                color = color.black,
+                color = color.textColor,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

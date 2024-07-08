@@ -6,48 +6,48 @@ import androidx.compose.ui.graphics.Color
 import com.pimsupa.coin.ui.theme.*
 
 data class CoinColor(
-    val white: Color,
-    val allBlack: Color,
-    val black: Color,
-    val lightGrey: Color,
-    val lightGrey2: Color,
-    val lightGrey3: Color,
-    val grey: Color,
-    val green: Color,
-    val red: Color,
-    val yellow: Color,
     val blue: Color,
-    val lightBlue: Color
+    val background: Color,
+    val highlight: Color,
+    val textColor: Color,
+    val textInviteColor: Color,
+    val card: Color,
+    val search: Color,
+    val iconTint: Color,
+    val positiveChange: Color,
+    val negativeChange: Color,
+    val textDetail: Color,
+    val inviteCard: Color,
 )
 
 val LightCoinColors = CoinColor(
-    white = White,
-    allBlack = AllBlack,
-    black = Black,
-    lightGrey = LightGrey,
-    lightGrey2 = LightGrey2,
-    lightGrey3 = LightGrey3,
-    grey = Grey,
-    green = Green,
-    red = Red,
-    yellow = Yellow,
     blue = Blue,
-    lightBlue = LightBlue
+    background = White,
+    textColor = Black,
+    textInviteColor = AllBlack,
+    card = LightGrey,
+    iconTint = LightGrey2,
+    search = LightGrey3,
+    textDetail = Grey,
+    positiveChange = Green,
+    negativeChange = Red,
+    highlight = Red,
+    inviteCard = LightBlue
 )
 
 val DarkCoinColors = CoinColor(
-    white = Black,
-    allBlack = White,
-    black = White,
-    lightGrey = DarkThemeLightGrey,
-    lightGrey2 = DarkThemeLightGrey2,
-    lightGrey3 = DarkThemeLightGrey3,
-    grey = Grey,
-    green = Green,
-    red = Yellow,
-    yellow = Yellow,
     blue = Blue,
-    lightBlue = LightBlue
+    background = Black,
+    textColor = White,
+    textInviteColor = AllBlack,
+    card = DarkThemeLightGrey,
+    iconTint = DarkThemeLightGrey2,
+    search = DarkThemeLightGrey3,
+    textDetail = Grey,
+    positiveChange = Green,
+    negativeChange = Red,
+    highlight = Yellow,
+    inviteCard = LightBlue
 )
 
 val LocalCoinColor = staticCompositionLocalOf { LightCoinColors }

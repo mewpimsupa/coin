@@ -42,7 +42,7 @@ fun CoinItem(coin: Coin, onClickCoinItem: () -> Unit = {}) {
             .fillMaxWidth()
             .padding(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(containerColor = color.lightGrey)
+        colors = CardDefaults.cardColors(containerColor = color.card)
     ) {
         Row(
             modifier = Modifier
@@ -66,7 +66,7 @@ fun CoinItem(coin: Coin, onClickCoinItem: () -> Unit = {}) {
                         modifier = Modifier.weight(1f),
                         text = coin.name,
                         style = style.titleBold,
-                        color = color.black,
+                        color = color.textColor,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -74,13 +74,13 @@ fun CoinItem(coin: Coin, onClickCoinItem: () -> Unit = {}) {
                     Text(
                         text = coin.getCoinListPrice().asString(context),
                         style = style.detailBold1,
-                        color = color.black,
+                        color = color.textColor,
                         textAlign = TextAlign.End
                     )
                 }
 
                 Row(verticalAlignment = Alignment.Bottom) {
-                    Text(text = coin.symbol, style = style.titleBold, color = color.grey)
+                    Text(text = coin.symbol, style = style.titleBold, color = color.textDetail)
                     Spacer(modifier = Modifier.weight(1f))
                     ChangeText(coin.isPositiveChange())
                 }

@@ -164,7 +164,7 @@ fun CoinListScreenContent(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = color.white)
+                .background(color = color.background)
                 .padding(padding)
                 .pullRefresh(pullRefreshState)
         ) {
@@ -180,7 +180,7 @@ fun CoinListScreenContent(
                             modifier = Modifier.size(24.dp),
                             painter = painterResource(id = R.drawable.ic_search),
                             contentDescription = "icon search",
-                            colorFilter = ColorFilter.tint(color = color.lightGrey3)
+                            colorFilter = ColorFilter.tint(color = color.search)
                         )
                     },
                     trailingIcon = {
@@ -197,7 +197,7 @@ fun CoinListScreenContent(
                             )
                         }
                     },
-                    colors = TextFieldDefaults.textFieldColors(backgroundColor = color.lightGrey2)
+                    colors = TextFieldDefaults.textFieldColors(backgroundColor = color.iconTint)
                 )
                 HorizontalDivider()
 
@@ -230,7 +230,9 @@ fun CoinListScreenContent(
                                             .padding(horizontal = 4.dp)
                                             .wrapContentHeight()
                                     ) {
-                                        Top3Coin(coin = it)
+                                        Top3Coin(coin = it) { coin ->
+                                            event.invoke(CoinListEvent.OnClickCoin(coin))
+                                        }
                                     }
                                 }
                             }
@@ -242,7 +244,7 @@ fun CoinListScreenContent(
                             modifier = Modifier.padding(vertical = 20.dp, horizontal = 16.dp),
                             text = stringResource(id = R.string.title_buy_sell_hold_crypto),
                             style = textStyle.titleBold,
-                            color = color.allBlack
+                            color = color.textColor
                         )
                     }
                     items(coins) { filterCoin ->

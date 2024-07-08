@@ -32,12 +32,12 @@ fun CoinListSearchNotFound(modifier: Modifier = Modifier) {
         Text(
             text = stringResource(id = R.string.text_not_found_title),
             style = textStyle.header1,
-            color = color.black
+            color = color.textColor
         )
         Text(
             text = stringResource(id = R.string.text_not_found_sub_title),
             style = textStyle.title,
-            color = color.grey
+            color = color.textDetail
         )
 
     }

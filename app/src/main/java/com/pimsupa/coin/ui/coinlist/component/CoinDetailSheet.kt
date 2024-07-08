@@ -2,6 +2,7 @@ package com.pimsupa.coin.ui.coinlist.component
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ModalBottomSheet
@@ -39,9 +41,10 @@ import com.pimsupa.coin.util.parseColor
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CoinDetail(coinDetail: CoinDetail, onDismiss: () -> Unit, bottomSheetState: SheetState) {
-
+    val color = LocalCoinColor.current
     ModalBottomSheet(
         onDismissRequest = onDismiss,
+        containerColor = color.background,
         sheetState = bottomSheetState
     ) {
         CoinContent(coinDetail)
@@ -70,7 +73,7 @@ fun CoinContent(coinDetail: CoinDetail) {
             Text(
                 text = if (coinDetail.description.isBlank()) stringResource(id = R.string.text_no_description) else coinDetail.description,
                 style = textStyle.detail2,
-                color = color.grey
+                color = color.textDetail
             )
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -113,13 +116,13 @@ fun CoinHeader(coinDetail: CoinDetail) {
                 Text(
                     text = coinDetail.name,
                     style = textStyle.header2,
-                    color = coinDetail.color.parseColor() ?: color.black
+                    color = coinDetail.color.parseColor() ?: color.textColor
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     text = coinDetail.symbolDetail().asString(context),
                     style = textStyle.title,
-                    color = color.allBlack
+                    color = color.textColor
                 )
             }
             Spacer(modifier = Modifier.height(6.dp))
@@ -127,13 +130,13 @@ fun CoinHeader(coinDetail: CoinDetail) {
                 Text(
                     text = stringResource(id = R.string.title_price),
                     style = textStyle.detailBold1,
-                    color = color.black
+                    color = color.textColor
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = coinDetail.getCoinDetailPrice().asString(context),
                     style = textStyle.detail1,
-                    color = color.black
+                    color = color.textColor
                 )
             }
             Spacer(modifier = Modifier.height(6.dp))
@@ -141,13 +144,13 @@ fun CoinHeader(coinDetail: CoinDetail) {
                 Text(
                     text = stringResource(id = R.string.title_market_cap),
                     style = textStyle.detailBold1,
-                    color = color.black
+                    color = color.textColor
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = coinDetail.getCoinMarketCap().asString(context),
                     style = textStyle.detail1,
-                    color = color.black
+                    color = color.textColor
                 )
             }
         }
