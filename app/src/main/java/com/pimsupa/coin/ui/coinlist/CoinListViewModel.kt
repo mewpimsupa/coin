@@ -43,7 +43,6 @@ class CoinListViewModel @Inject constructor(
     private val getCoinDetail: GetCoinDetail,
     private val searchCoins: SearchCoins,
     private val updateCoin: UpdateCoin,
-    private val workManager: WorkManager,
     @Dispatcher(CoinDispatchers.Default) private val defaultDispatcher: CoroutineDispatcher
 ) :
     BaseViewModel<CoinListState>(CoinListState()) {
